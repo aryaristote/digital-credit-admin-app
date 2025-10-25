@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Transaction } from '../../shared/entities/transaction.entity';
+import { Transaction, TransactionStatus } from '../../shared/entities/transaction.entity';
 import { SavingsAccount } from '../../shared/entities/savings-account.entity';
 import { User } from '../../shared/entities/user.entity';
 
@@ -61,21 +61,21 @@ export class TransactionsService {
       .createQueryBuilder('transaction')
       .select('SUM(transaction.amount)', 'total')
       .where('transaction.type = :type', { type: 'deposit' })
-      .andWhere('transaction.status = :status', { status: 'completed' })
+      .andWhere('transaction.status = :status', { status: TransactionStatus.COMPLETED })
       .getRawOne();
 
     const totalWithdrawalsResult = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select('SUM(transaction.amount)', 'total')
       .where('transaction.type = :type', { type: 'withdrawal' })
-      .andWhere('transaction.status = :status', { status: 'completed' })
+      .andWhere('transaction.status = :status', { status: TransactionStatus.COMPLETED })
       .getRawOne();
 
     const [totalCount, pendingCount, completedCount, failedCount] = await Promise.all([
       this.transactionRepository.count(),
-      this.transactionRepository.count({ where: { status: 'pending' } }),
-      this.transactionRepository.count({ where: { status: 'completed' } }),
-      this.transactionRepository.count({ where: { status: 'failed' } }),
+      this.transactionRepository.count({ where: { status: TransactionStatus.PENDING } }),
+      this.transactionRepository.count({ where: { status: TransactionStatus.COMPLETED } }),
+      this.transactionRepository.count({ where: { status: TransactionStatus.FAILED } }),
     ]);
 
     return {

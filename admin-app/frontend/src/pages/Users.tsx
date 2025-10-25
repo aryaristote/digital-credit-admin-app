@@ -43,10 +43,13 @@ export default function Users() {
   const fetchUsers = async () => {
     try {
       const response = await api.get("/users");
-      setUsers(response.data);
-      setFilteredUsers(response.data);
-    } catch (error) {
-      toast.error("Failed to fetch users");
+      // Backend returns paginated response: { data: [...], total, page, totalPages }
+      const usersData = response.data.data || response.data || [];
+      setUsers(usersData);
+      setFilteredUsers(usersData);
+    } catch (error: any) {
+      console.error("Failed to fetch users:", error);
+      toast.error(error.response?.data?.message || "Failed to fetch users");
     } finally {
       setLoading(false);
     }
@@ -55,15 +58,14 @@ export default function Users() {
   const toggleUserStatus = async (userId: string, currentStatus: boolean) => {
     setUpdatingUserId(userId);
     try {
-      await api.patch(`/users/${userId}`, {
-        isActive: !currentStatus,
-      });
+      await api.put(`/users/${userId}/toggle-status`);
       toast.success(
         `User ${!currentStatus ? "activated" : "deactivated"} successfully`
       );
       fetchUsers();
-    } catch (error) {
-      toast.error("Failed to update user status");
+    } catch (error: any) {
+      console.error("Failed to update user status:", error);
+      toast.error(error.response?.data?.message || "Failed to update user status");
     } finally {
       setUpdatingUserId(null);
     }

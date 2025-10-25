@@ -102,13 +102,21 @@ export class CreditService {
     adminId: string,
     approvedAmount?: number
   ) {
+    console.log(`🔍 [ADMIN APPROVAL] Processing approval for request ${requestId}`);
+    console.log(`👤 [ADMIN APPROVAL] Admin ID: ${adminId}`);
+    console.log(`💰 [ADMIN APPROVAL] Approved amount: ${approvedAmount || 'using requested amount'}`);
+
     const request = await this.creditRequestRepository.findOne({
       where: { id: requestId },
     });
 
     if (!request) {
+      console.log(`❌ [ADMIN APPROVAL] Credit request ${requestId} not found`);
       throw new Error("Credit request not found");
     }
+
+    console.log(`📋 [ADMIN APPROVAL] Current status: ${request.status}`);
+    console.log(`📋 [ADMIN APPROVAL] Requested amount: ${request.requestedAmount}`);
 
     const dueDate = new Date();
     dueDate.setMonth(dueDate.getMonth() + request.termMonths);
@@ -121,23 +129,36 @@ export class CreditService {
 
     await this.creditRequestRepository.save(request);
 
+    console.log(`✅ [ADMIN APPROVAL] Credit request ${requestId} approved and activated`);
+    console.log(`🎉 [ADMIN APPROVAL] Final status: ${request.status}, Approved amount: ${request.approvedAmount}`);
+
     return { message: "Credit request approved successfully", request };
   }
 
   async rejectRequest(requestId: string, adminId: string, reason: string) {
+    console.log(`🔍 [ADMIN REJECTION] Processing rejection for request ${requestId}`);
+    console.log(`👤 [ADMIN REJECTION] Admin ID: ${adminId}`);
+    console.log(`📝 [ADMIN REJECTION] Rejection reason: ${reason}`);
+
     const request = await this.creditRequestRepository.findOne({
       where: { id: requestId },
     });
 
     if (!request) {
+      console.log(`❌ [ADMIN REJECTION] Credit request ${requestId} not found`);
       throw new Error("Credit request not found");
     }
+
+    console.log(`📋 [ADMIN REJECTION] Current status: ${request.status}`);
 
     request.status = CreditStatus.REJECTED;
     request.rejectionReason = reason;
     request.approvedBy = adminId;
 
     await this.creditRequestRepository.save(request);
+
+    console.log(`✅ [ADMIN REJECTION] Credit request ${requestId} rejected`);
+    console.log(`🚫 [ADMIN REJECTION] Final status: ${request.status}`);
 
     return { message: "Credit request rejected", request };
   }

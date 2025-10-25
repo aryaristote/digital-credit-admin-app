@@ -40,7 +40,7 @@ export class CreditService {
     // Calculate interest rate based on credit score
     const interestRate = this.calculateInterestRate(user.creditScore);
 
-    // Create credit request
+    // Create credit request with PENDING status (requires admin approval)
     const creditRequest = await this.creditRepository.createCreditRequest({
       userId,
       requestedAmount: createCreditRequestDto.requestedAmount,
@@ -50,11 +50,12 @@ export class CreditService {
       status: CreditStatus.PENDING,
     });
 
-    // Auto-approve or reject based on credit score (simulation)
-    await this.processAutomaticApproval(creditRequest.id, user.creditScore);
+    console.log(`📝 [CREDIT REQUEST] Created credit request ${creditRequest.id} with PENDING status`);
+    console.log(`👤 [CREDIT REQUEST] User: ${user.email}, Credit Score: ${user.creditScore}`);
+    console.log(`💰 [CREDIT REQUEST] Amount: ${createCreditRequestDto.requestedAmount}, Term: ${createCreditRequestDto.termMonths} months`);
 
-    const updatedRequest = await this.creditRepository.findById(creditRequest.id);
-    return this.toCreditRequestResponseDto(updatedRequest);
+    // Return the request as PENDING (no automatic approval)
+    return this.toCreditRequestResponseDto(creditRequest);
   }
 
   async getCreditRequests(userId: string): Promise<CreditRequestResponseDto[]> {
@@ -187,7 +188,9 @@ export class CreditService {
     );
 
     console.log(`🔍 [AUTO APPROVAL] Processing credit request ${creditRequestId}`);
-    console.log(`📊 [AUTO APPROVAL] Credit score: ${creditScore}, Threshold: ${approvalThreshold}`);
+    console.log(
+      `📊 [AUTO APPROVAL] Credit score: ${creditScore}, Threshold: ${approvalThreshold}`,
+    );
 
     const creditRequest = await this.creditRepository.findById(creditRequestId);
 
@@ -203,7 +206,9 @@ export class CreditService {
         approvedAt: new Date(),
         dueDate,
       });
-      console.log(`🎉 [AUTO APPROVAL] Credit request ${creditRequestId} approved and activated`);
+      console.log(
+        `🎉 [AUTO APPROVAL] Credit request ${creditRequestId} approved and activated`,
+      );
     } else {
       // Reject the request
       console.log(`❌ [AUTO APPROVAL] Auto-rejecting credit request ${creditRequestId}`);

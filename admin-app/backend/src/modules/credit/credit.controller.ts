@@ -36,7 +36,10 @@ export class CreditController {
     @Query('limit') limit: number = 10,
     @Query('status') status?: string,
   ) {
-    return await this.creditService.getAllRequests(page, limit, status);
+    console.log('📥 [CREDIT CONTROLLER] Fetching credit requests - status:', status || 'all');
+    const result = await this.creditService.getAllRequests(page, limit, status);
+    console.log('✅ [CREDIT CONTROLLER] Found', result.total, 'credit requests');
+    return result;
   }
 
   @Get('stats')

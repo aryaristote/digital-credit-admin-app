@@ -22,7 +22,10 @@ export class UsersController {
   @Get()
   @ApiOperation({ summary: 'Get all users with pagination' })
   async getUsers(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
-    return await this.usersService.getAllUsers(page, limit);
+    console.log('📥 [USERS CONTROLLER] Fetching users - page:', page, 'limit:', limit);
+    const result = await this.usersService.getAllUsers(page, limit);
+    console.log('✅ [USERS CONTROLLER] Found', result.total, 'total users,', result.data.length, 'in this page');
+    return result;
   }
 
   @Get(':id')

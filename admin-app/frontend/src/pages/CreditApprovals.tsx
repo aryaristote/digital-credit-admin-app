@@ -93,6 +93,10 @@ export default function CreditApprovals() {
 
   const filteredRequests = requests.filter((req) => {
     if (filter === "all") return true;
+    if (filter === "approved") {
+      // Show both approved and active statuses for "approved" filter
+      return req.status === "approved" || req.status === "active";
+    }
     return req.status === filter;
   });
 

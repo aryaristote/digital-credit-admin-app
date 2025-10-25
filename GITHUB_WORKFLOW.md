@@ -121,17 +121,20 @@ git push -u origin hotfix/fix-security-issue
 ### When I Make Changes:
 
 1. **Create appropriate branch**
+
    ```bash
    git checkout -b feature/add-new-feature
    ```
 
 2. **Make changes and commit**
+
    ```bash
    git add client-app/
    git commit -m "feat: add new feature with tests"
    ```
 
 3. **Push to GitHub**
+
    ```bash
    git push -u origin feature/add-new-feature
    ```
@@ -145,6 +148,7 @@ git push -u origin hotfix/fix-security-issue
 We're using **Conventional Commits**:
 
 ### Format
+
 ```
 <type>(<scope>): <subject>
 
@@ -152,6 +156,7 @@ We're using **Conventional Commits**:
 ```
 
 ### Types
+
 - `feat:` - New feature
 - `fix:` - Bug fix
 - `docs:` - Documentation changes
@@ -161,6 +166,7 @@ We're using **Conventional Commits**:
 - `chore:` - Build/config changes
 
 ### Examples
+
 ```bash
 git commit -m "feat(auth): add two-factor authentication"
 git commit -m "fix(credit): prevent payment without savings balance"
@@ -189,12 +195,14 @@ fb4b320 docs: add Git repository setup guide
 On GitHub, go to **Settings → Branches** and add these rules:
 
 ### For `main` branch:
+
 - ✅ Require pull request reviews before merging
 - ✅ Require status checks to pass
 - ✅ Require branches to be up to date
 - ✅ Include administrators
 
 ### For `develop` branch:
+
 - ✅ Require pull request reviews (optional)
 - ✅ Require status checks to pass
 
@@ -292,4 +300,3 @@ When working together:
 **Status**: ✅ Ready to push to GitHub!
 
 Run the setup commands above to get started.
-

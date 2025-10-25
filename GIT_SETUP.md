@@ -28,6 +28,7 @@ Jambo-test/                           # Root Repository
 ## 📊 Commit Summary
 
 ### Root Project Repository
+
 **Total Commits**: 1
 
 ```
@@ -35,17 +36,20 @@ Jambo-test/                           # Root Repository
 ```
 
 ### Client Application Repository
+
 **Total Commits**: 21
 
 Organized by module as per project recommendations:
 
 **Infrastructure Setup (2 commits)**
+
 ```
 ffe9e98 chore: initialize NestJS backend with project configuration
 75926c6 feat: set up backend core architecture and common utilities
 ```
 
 **Backend Modules (7 commits)**
+
 ```
 d5af459 feat(users): implement user management module
 90be391 feat(sessions): implement session tracking module
@@ -57,6 +61,7 @@ d5af459 feat(users): implement user management module
 ```
 
 **Frontend Setup (3 commits)**
+
 ```
 b81659d chore(frontend): initialize React application with Vite and Tailwind
 31cdfe8 feat(frontend): set up React core and routing infrastructure
@@ -64,6 +69,7 @@ e92c18f feat(frontend): implement authentication state management
 ```
 
 **Frontend Components (3 commits)**
+
 ```
 a61154a feat(frontend): create reusable UI component library
 a4f6eca feat(frontend): implement application layout structure
@@ -71,6 +77,7 @@ e0d3a71 feat(frontend): build authentication pages
 ```
 
 **Frontend Pages (5 commits)**
+
 ```
 7c6e935 feat(frontend): create dashboard with financial overview
 8886dce feat(frontend): implement savings account management
@@ -80,16 +87,19 @@ e119baa feat(frontend): add profile and notification management
 ```
 
 **CI/CD & Documentation (1 commit)**
+
 ```
 dcb6172 ci: add GitHub Actions workflow and project documentation
 ```
 
 ### Admin Application Repository
+
 **Total Commits**: 9
 
 Organized by module:
 
 **Infrastructure Setup (3 commits)**
+
 ```
 ce7e1ca chore: initialize NestJS admin backend with configuration
 27d5b0c feat: set up admin application core architecture
@@ -97,6 +107,7 @@ b255407 feat: add common utilities and shared database entities
 ```
 
 **Admin Modules (5 commits)**
+
 ```
 9fdd032 feat(admins): create admin entity and module
 0c4266b feat(auth): implement admin-only authentication
@@ -106,6 +117,7 @@ b255407 feat: add common utilities and shared database entities
 ```
 
 **Documentation (1 commit)**
+
 ```
 df7f699 docs: add comprehensive admin application documentation
 ```
@@ -117,6 +129,7 @@ df7f699 docs: add comprehensive admin application documentation
 All commits follow the **Conventional Commits** specification:
 
 ### Format
+
 ```
 <type>(<scope>): <subject>
 
@@ -124,12 +137,14 @@ All commits follow the **Conventional Commits** specification:
 ```
 
 ### Types Used
+
 - **feat**: New feature
 - **chore**: Build/config changes
 - **docs**: Documentation updates
 - **ci**: CI/CD changes
 
 ### Scopes Used
+
 - **users**: User management
 - **auth**: Authentication
 - **sessions**: Session tracking
@@ -146,6 +161,7 @@ All commits follow the **Conventional Commits** specification:
 ## 🚀 Working with the Repositories
 
 ### Clone the Root Project
+
 ```bash
 cd "C:\Users\AriKa\OneDrive - IST\Desktop"
 git clone <your-repo-url> Jambo-test
@@ -153,6 +169,7 @@ cd Jambo-test
 ```
 
 ### Work with Client Application
+
 ```bash
 cd client-app
 git log                    # View commit history
@@ -161,6 +178,7 @@ git branch feature/new     # Create new branch
 ```
 
 ### Work with Admin Application
+
 ```bash
 cd admin-app
 git log                    # View commit history
@@ -191,6 +209,7 @@ git branch feature/new     # Create new branch
 To push to GitHub/GitLab:
 
 ### Root Repository
+
 ```bash
 cd "C:\Users\AriKa\OneDrive - IST\Desktop\Jambo-test"
 git remote add origin <root-repo-url>
@@ -199,6 +218,7 @@ git push -u origin main
 ```
 
 ### Client Application
+
 ```bash
 cd "C:\Users\AriKa\OneDrive - IST\Desktop\Jambo-test\client-app"
 git remote add origin <client-repo-url>
@@ -207,6 +227,7 @@ git push -u origin main
 ```
 
 ### Admin Application
+
 ```bash
 cd "C:\Users\AriKa\OneDrive - IST\Desktop\Jambo-test\admin-app"
 git remote add origin <admin-repo-url>
@@ -219,6 +240,7 @@ git push -u origin main
 ## 📚 Viewing Detailed History
 
 ### View Full Commit Details
+
 ```bash
 git log                         # Full log
 git log --oneline              # Condensed view
@@ -227,17 +249,20 @@ git log --stat                 # With file statistics
 ```
 
 ### View Specific Commit
+
 ```bash
 git show <commit-hash>         # Show commit details
 git diff <commit1> <commit2>   # Compare commits
 ```
 
 ### View Changes by Author
+
 ```bash
 git log --author="Your Name"
 ```
 
 ### View Changes by File
+
 ```bash
 git log -- path/to/file
 ```
@@ -247,16 +272,19 @@ git log -- path/to/file
 ## 🌿 Branching Strategy Recommendation
 
 ### Main Branch
+
 - `main` (or `master`) - Production-ready code
 - Protected branch, requires PR for changes
 
 ### Development Branches
+
 - `develop` - Integration branch
 - `feature/<name>` - New features
 - `bugfix/<name>` - Bug fixes
 - `hotfix/<name>` - Urgent production fixes
 
 ### Example Workflow
+
 ```bash
 # Create feature branch
 git checkout -b feature/admin-dashboard
@@ -276,18 +304,21 @@ git push origin feature/admin-dashboard
 ## 📊 Repository Statistics
 
 ### Client Application
+
 - **Lines of Code**: ~8,000+
 - **Modules**: 8 (Auth, Users, Sessions, Savings, Credit, Notifications, Frontend)
 - **Commits**: 21
 - **Files**: 60+
 
 ### Admin Application
+
 - **Lines of Code**: ~2,000+
 - **Modules**: 5 (Auth, Users, Credit, Analytics, Admins)
 - **Commits**: 9
 - **Files**: 20+
 
 ### Root Project
+
 - **Documentation Files**: 3
 - **Commits**: 1
 
@@ -308,6 +339,7 @@ git push origin feature/admin-dashboard
 ## 🎓 Key Takeaways
 
 This repository demonstrates:
+
 - ✅ Professional Git workflow
 - ✅ Incremental, logical development
 - ✅ Clear commit history for code review
@@ -322,11 +354,13 @@ This repository demonstrates:
 ## 📞 Need Help?
 
 To view this information again:
+
 ```bash
 cat GIT_SETUP.md
 ```
 
 To see commit history:
+
 ```bash
 git log --oneline --graph --all
 ```
@@ -336,4 +370,3 @@ git log --oneline --graph --all
 **Repository Status**: ✅ **PRODUCTION READY**
 
 All three repositories are properly initialized with meaningful commit history that demonstrates professional development practices.
-

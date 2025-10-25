@@ -295,7 +295,10 @@ export default function Credit() {
                             Make a Payment
                           </h4>
                           <span className="text-sm text-gray-600">
-                            Available: <span className="font-semibold">{formatCurrency(savingsBalance)}</span>
+                            Available:{" "}
+                            <span className="font-semibold">
+                              {formatCurrency(savingsBalance)}
+                            </span>
                           </span>
                         </div>
                         <div className="space-y-3">

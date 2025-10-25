@@ -120,6 +120,10 @@ export class CreditRepository {
     });
   }
 
+  async deleteCreditRequest(id: string): Promise<void> {
+    await this.creditRequestRepository.delete(id);
+  }
+
   private generateReference(): string {
     const timestamp = Date.now();
     const random = Math.floor(Math.random() * 1000000);

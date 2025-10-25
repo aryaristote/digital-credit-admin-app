@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Delete,
   Body,
   Param,
   UseGuards,
@@ -100,6 +101,21 @@ export class CreditController {
     @Param('id') creditRequestId: string,
   ): Promise<CreditRepaymentResponseDto[]> {
     return await this.creditService.getRepayments(userId, creditRequestId);
+  }
+
+  @Delete('requests/:id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Delete a credit request' })
+  @ApiResponse({
+    status: 200,
+    description: 'Credit request deleted successfully',
+  })
+  async deleteRequest(
+    @CurrentUser('id') userId: string,
+    @Param('id') creditRequestId: string,
+  ): Promise<{ message: string }> {
+    await this.creditService.deleteCreditRequest(userId, creditRequestId);
+    return { message: 'Credit request deleted successfully' };
   }
 }
 

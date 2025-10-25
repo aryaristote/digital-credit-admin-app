@@ -142,13 +142,37 @@ export class CreditService {
     return repayments.map((rep) => this.toCreditRepaymentResponseDto(rep));
   }
 
+  async deleteCreditRequest(
+    userId: string,
+    creditRequestId: string,
+  ): Promise<void> {
+    const creditRequest = await this.creditRepository.findById(creditRequestId);
+
+    if (!creditRequest) {
+      throw new NotFoundException('Credit request not found');
+    }
+
+    if (creditRequest.userId !== userId) {
+      throw new BadRequestException('Unauthorized access to credit request');
+    }
+
+    // Only allow deletion of pending or rejected requests
+    if (creditRequest.status !== CreditStatus.PENDING && creditRequest.status !== CreditStatus.REJECTED) {
+      throw new BadRequestException(
+        'Only pending or rejected credit requests can be deleted',
+      );
+    }
+
+    await this.creditRepository.deleteCreditRequest(creditRequestId);
+  }
+
   private async processAutomaticApproval(
     creditRequestId: string,
     creditScore: number,
   ): Promise<void> {
     const approvalThreshold = this.configService.get<number>(
       'CREDIT_APPROVAL_THRESHOLD',
-      650,
+      600,
     );
 
     const creditRequest = await this.creditRepository.findById(creditRequestId);

@@ -89,8 +89,8 @@ export class UsersService {
   }
 
   private generateInitialCreditScore(): number {
-    // Simulate initial credit score (between 500-700)
-    return Math.floor(Math.random() * (700 - 500 + 1)) + 500;
+    // Simulate initial credit score (between 650-800 for better approval rate)
+    return Math.floor(Math.random() * (800 - 650 + 1)) + 650;
   }
 
   private calculateCreditScore(): number {

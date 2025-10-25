@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Plus, AlertCircle, CheckCircle, Clock } from "lucide-react";
+import { Plus, AlertCircle, CheckCircle, Clock, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 import {
   Card,
   CardContent,
@@ -28,6 +29,7 @@ interface CreditRequest {
 export default function Credit() {
   const [requests, setRequests] = useState<CreditRequest[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchCreditRequests();
@@ -41,6 +43,24 @@ export default function Credit() {
       console.error("Failed to fetch credit requests", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDelete = async (requestId: string) => {
+    if (!window.confirm("Are you sure you want to delete this credit request?")) {
+      return;
+    }
+
+    setDeletingId(requestId);
+    try {
+      await api.delete(`/credit/requests/${requestId}`);
+      toast.success("Credit request deleted successfully");
+      // Refresh the list
+      await fetchCreditRequests();
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to delete credit request");
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -202,10 +222,24 @@ export default function Credit() {
                     </div>
                   )}
 
-                  <div className="mt-4 pt-4 border-t border-gray-200 flex justify-between text-xs text-gray-500">
-                    <span>Requested: {formatDate(request.createdAt)}</span>
-                    {request.dueDate && (
-                      <span>Due: {formatDate(request.dueDate)}</span>
+                  <div className="mt-4 pt-4 border-t border-gray-200 flex justify-between items-center">
+                    <div className="text-xs text-gray-500">
+                      <div>Requested: {formatDate(request.createdAt)}</div>
+                      {request.dueDate && (
+                        <div>Due: {formatDate(request.dueDate)}</div>
+                      )}
+                    </div>
+                    {(request.status === "pending" || request.status === "rejected") && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDelete(request.id)}
+                        isLoading={deletingId === request.id}
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                      >
+                        <Trash2 className="w-4 h-4 mr-1" />
+                        Delete
+                      </Button>
                     )}
                   </div>
                 </CardContent>

@@ -18,7 +18,18 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'Login successful' })
   @ApiResponse({ status: 401, description: 'Invalid credentials' })
   async login(@Body() loginDto: LoginDto) {
-    return await this.authService.login(loginDto.email, loginDto.password);
+    console.log('📥 [AUTH CONTROLLER] Received login request');
+    console.log('📧 [AUTH CONTROLLER] Email:', loginDto.email);
+    console.log('🔐 [AUTH CONTROLLER] Password length:', loginDto.password?.length || 0);
+    
+    try {
+      const result = await this.authService.login(loginDto.email, loginDto.password);
+      console.log('✅ [AUTH CONTROLLER] Login successful, sending response');
+      return result;
+    } catch (error) {
+      console.error('❌ [AUTH CONTROLLER] Login failed:', error.message);
+      throw error;
+    }
   }
 }
 

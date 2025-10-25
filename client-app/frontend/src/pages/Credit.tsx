@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Plus, AlertCircle, CheckCircle, Clock, Trash2 } from "lucide-react";
+import { Plus, AlertCircle, CheckCircle, Clock, Trash2, DollarSign } from "lucide-react";
 import { toast } from "sonner";
 import {
   Card,
@@ -9,6 +9,7 @@ import {
   CardTitle,
 } from "../components/ui/Card";
 import Button from "../components/ui/Button";
+import Input from "../components/ui/Input";
 import { formatCurrency, formatDate } from "../lib/utils";
 import api from "../lib/api";
 
@@ -30,6 +31,9 @@ export default function Credit() {
   const [requests, setRequests] = useState<CreditRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [repayingId, setRepayingId] = useState<string | null>(null);
+  const [repaymentAmount, setRepaymentAmount] = useState("");
+  const [repaymentNotes, setRepaymentNotes] = useState("");
 
   useEffect(() => {
     fetchCreditRequests();
@@ -47,7 +51,9 @@ export default function Credit() {
   };
 
   const handleDelete = async (requestId: string) => {
-    if (!window.confirm("Are you sure you want to delete this credit request?")) {
+    if (
+      !window.confirm("Are you sure you want to delete this credit request?")
+    ) {
       return;
     }
 
@@ -58,9 +64,42 @@ export default function Credit() {
       // Refresh the list
       await fetchCreditRequests();
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to delete credit request");
+      toast.error(
+        error.response?.data?.message || "Failed to delete credit request"
+      );
     } finally {
       setDeletingId(null);
+    }
+  };
+
+  const handleRepayment = async (requestId: string, remainingBalance: number) => {
+    const amount = parseFloat(repaymentAmount);
+    
+    if (!amount || amount <= 0) {
+      toast.error("Please enter a valid amount");
+      return;
+    }
+
+    if (amount > remainingBalance) {
+      toast.error(`Amount cannot exceed remaining balance of ${formatCurrency(remainingBalance)}`);
+      return;
+    }
+
+    setRepayingId(requestId);
+    try {
+      await api.post(`/credit/requests/${requestId}/repay`, {
+        amount,
+        notes: repaymentNotes || undefined,
+      });
+      toast.success("Payment successful!");
+      setRepaymentAmount("");
+      setRepaymentNotes("");
+      // Refresh the list
+      await fetchCreditRequests();
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Payment failed");
+    } finally {
+      setRepayingId(null);
     }
   };
 
@@ -191,24 +230,58 @@ export default function Credit() {
                   </div>
 
                   {request.status === "active" && (
-                    <div className="mt-4">
-                      <div className="flex justify-between text-sm mb-2">
-                        <span>Repayment Progress</span>
-                        <span className="font-medium">
-                          {progress.toFixed(1)}%
-                        </span>
+                    <div className="mt-4 space-y-4">
+                      <div>
+                        <div className="flex justify-between text-sm mb-2">
+                          <span>Repayment Progress</span>
+                          <span className="font-medium">
+                            {progress.toFixed(1)}%
+                          </span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
+                          <div
+                            className="bg-primary-600 h-2 rounded-full"
+                            style={{ width: `${progress}%` }}
+                          />
+                        </div>
+                        <div className="flex justify-between text-sm text-gray-600">
+                          <span>
+                            Repaid: {formatCurrency(request.totalRepaid)}
+                          </span>
+                          <span>Remaining: {formatCurrency(remaining)}</span>
+                        </div>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
-                        <div
-                          className="bg-primary-600 h-2 rounded-full"
-                          style={{ width: `${progress}%` }}
-                        />
-                      </div>
-                      <div className="flex justify-between text-sm text-gray-600">
-                        <span>
-                          Repaid: {formatCurrency(request.totalRepaid)}
-                        </span>
-                        <span>Remaining: {formatCurrency(remaining)}</span>
+
+                      {/* Repayment Form */}
+                      <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                        <h4 className="font-medium text-green-900 mb-3 flex items-center">
+                          <DollarSign className="w-4 h-4 mr-1" />
+                          Make a Payment
+                        </h4>
+                        <div className="space-y-3">
+                          <Input
+                            type="number"
+                            placeholder="Enter amount"
+                            value={repaymentAmount}
+                            onChange={(e) => setRepaymentAmount(e.target.value)}
+                            min="0.01"
+                            max={remaining}
+                            step="0.01"
+                          />
+                          <Input
+                            type="text"
+                            placeholder="Notes (optional)"
+                            value={repaymentNotes}
+                            onChange={(e) => setRepaymentNotes(e.target.value)}
+                          />
+                          <Button
+                            onClick={() => handleRepayment(request.id, remaining)}
+                            isLoading={repayingId === request.id}
+                            className="w-full"
+                          >
+                            Pay {repaymentAmount ? formatCurrency(parseFloat(repaymentAmount)) : ""}
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -229,7 +302,8 @@ export default function Credit() {
                         <div>Due: {formatDate(request.dueDate)}</div>
                       )}
                     </div>
-                    {(request.status === "pending" || request.status === "rejected") && (
+                    {(request.status === "pending" ||
+                      request.status === "rejected") && (
                       <Button
                         variant="outline"
                         size="sm"

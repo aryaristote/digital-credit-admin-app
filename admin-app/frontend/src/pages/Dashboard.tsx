@@ -31,7 +31,17 @@ export default function Dashboard() {
   const fetchDashboardStats = async () => {
     try {
       const response = await api.get("/analytics/dashboard");
-      setStats(response.data);
+      const data = response.data;
+      
+      // Map the nested backend response to flat structure
+      setStats({
+        totalUsers: data.users?.total || 0,
+        activeUsers: data.users?.active || 0,
+        recentUsers: data.users?.newThisMonth || 0,
+        pendingCreditRequests: data.credits?.pending || 0,
+        totalCreditDisbursed: data.financials?.totalDisbursed || 0,
+        totalSavings: data.financials?.totalSavings || 0,
+      });
     } catch (error) {
       console.error("Failed to fetch dashboard stats", error);
     } finally {

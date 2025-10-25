@@ -1,5 +1,10 @@
 import { Controller, Post, Body, HttpCode, HttpStatus } from "@nestjs/common";
-import { ApiTags, ApiOperation, ApiResponse, ApiProperty } from "@nestjs/swagger";
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiProperty,
+} from "@nestjs/swagger";
 import { IsEmail, IsString, MinLength } from "class-validator";
 import { AuthService } from "./auth.service";
 

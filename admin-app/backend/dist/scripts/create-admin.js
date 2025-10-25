@@ -11,7 +11,7 @@ async function createAdmin() {
         port: parseInt(process.env.DB_PORT || "5432"),
         username: process.env.DB_USERNAME || "postgres",
         password: process.env.DB_PASSWORD || "root",
-        database: process.env.DB_DATABASE || "digital_credit_admin",
+        database: process.env.DB_DATABASE || "digital_credit_client",
         entities: [admin_entity_1.Admin],
         synchronize: true,
     });

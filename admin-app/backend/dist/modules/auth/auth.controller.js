@@ -15,9 +15,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
+const class_validator_1 = require("class-validator");
 const auth_service_1 = require("./auth.service");
 class LoginDto {
 }
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        example: "admin@digitalcredit.com",
+        description: "Admin email address",
+    }),
+    (0, class_validator_1.IsEmail)(),
+    __metadata("design:type", String)
+], LoginDto.prototype, "email", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        example: "Admin@123456",
+        description: "Admin password",
+    }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MinLength)(8),
+    __metadata("design:type", String)
+], LoginDto.prototype, "password", void 0);
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;

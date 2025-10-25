@@ -12,16 +12,16 @@ import Analytics from "./pages/Analytics";
 function App() {
   return (
     <BrowserRouter>
-      <Toaster 
-        position="top-right" 
-        richColors 
+      <Toaster
+        position="top-right"
+        richColors
         expand={true}
         toastOptions={{
           style: {
-            padding: '16px',
-            gap: '8px',
+            padding: "16px",
+            gap: "8px",
           },
-          className: 'toast-custom',
+          className: "toast-custom",
         }}
       />
       <Routes>
@@ -34,7 +34,10 @@ function App() {
                 <Routes>
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/users" element={<Users />} />
-                  <Route path="/credit-approvals" element={<CreditApprovals />} />
+                  <Route
+                    path="/credit-approvals"
+                    element={<CreditApprovals />}
+                  />
                   <Route path="/transactions" element={<Transactions />} />
                   <Route path="/analytics" element={<Analytics />} />
                 </Routes>
@@ -58,4 +61,3 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 
 export default App;
-

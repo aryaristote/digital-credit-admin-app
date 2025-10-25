@@ -12,23 +12,30 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token = useAuthStore.getState().token;
+    console.log("🔐 [API] Request to:", config.url, "| Token:", token ? "Present" : "Missing");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
   (error) => {
+    console.error("❌ [API] Request error:", error);
     return Promise.reject(error);
   }
 );
 
 // Response interceptor to handle errors
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log("✅ [API] Response from:", response.config.url, "| Status:", response.status);
+    return response;
+  },
   async (error) => {
     const originalRequest = error.config;
+    console.error("❌ [API] Response error:", error.response?.status, error.response?.data);
 
     if (error.response?.status === 401 && !originalRequest._retry) {
+      console.log("🔄 [API] Attempting token refresh...");
       originalRequest._retry = true;
 
       try {
@@ -47,6 +54,7 @@ api.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return api(originalRequest);
       } catch (refreshError) {
+        console.error("❌ [API] Token refresh failed, redirecting to login");
         useAuthStore.getState().clearAuth();
         window.location.href = "/login";
         return Promise.reject(refreshError);

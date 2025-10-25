@@ -36,10 +36,7 @@ export class CreditController {
     @CurrentUser('id') userId: string,
     @Body() createCreditRequestDto: CreateCreditRequestDto,
   ): Promise<CreditRequestResponseDto> {
-    return await this.creditService.createCreditRequest(
-      userId,
-      createCreditRequestDto,
-    );
+    return await this.creditService.createCreditRequest(userId, createCreditRequestDto);
   }
 
   @Get('requests')
@@ -82,11 +79,7 @@ export class CreditController {
     @Param('id') creditRequestId: string,
     @Body() repayCreditDto: RepayCreditDto,
   ): Promise<CreditRepaymentResponseDto> {
-    return await this.creditService.repayCredit(
-      userId,
-      creditRequestId,
-      repayCreditDto,
-    );
+    return await this.creditService.repayCredit(userId, creditRequestId, repayCreditDto);
   }
 
   @Get('requests/:id/repayments')
@@ -118,4 +111,3 @@ export class CreditController {
     return { message: 'Credit request deleted successfully' };
   }
 }
-

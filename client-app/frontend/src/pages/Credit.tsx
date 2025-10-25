@@ -41,9 +41,11 @@ export default function Credit() {
   const [repayingId, setRepayingId] = useState<string | null>(null);
   const [repaymentAmount, setRepaymentAmount] = useState("");
   const [repaymentNotes, setRepaymentNotes] = useState("");
+  const [savingsBalance, setSavingsBalance] = useState<number>(0);
 
   useEffect(() => {
     fetchCreditRequests();
+    fetchSavingsBalance();
   }, []);
 
   const fetchCreditRequests = async () => {
@@ -54,6 +56,15 @@ export default function Credit() {
       console.error("Failed to fetch credit requests", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchSavingsBalance = async () => {
+    try {
+      const response: any = await api.get("/savings/account");
+      setSavingsBalance(response.data.balance || 0);
+    } catch (error) {
+      console.error("Failed to fetch savings balance", error);
     }
   };
 
@@ -90,6 +101,15 @@ export default function Credit() {
       return;
     }
 
+    if (amount > savingsBalance) {
+      toast.error(
+        `Insufficient funds. Your savings balance is ${formatCurrency(
+          savingsBalance
+        )}`
+      );
+      return;
+    }
+
     if (amount > remainingBalance) {
       toast.error(
         `Amount cannot exceed remaining balance of ${formatCurrency(
@@ -108,8 +128,9 @@ export default function Credit() {
       toast.success("Payment successful!");
       setRepaymentAmount("");
       setRepaymentNotes("");
-      // Refresh the list
+      // Refresh both credit requests and savings balance
       await fetchCreditRequests();
+      await fetchSavingsBalance();
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Payment failed");
     } finally {
@@ -268,10 +289,15 @@ export default function Credit() {
 
                       {/* Repayment Form */}
                       <div className="p-4 bg-primary-50 border border-primary-200 rounded-lg">
-                        <h4 className="font-medium text-primary-900 mb-3 flex items-center">
-                          <DollarSign className="w-4 h-4 mr-1" />
-                          Make a Payment
-                        </h4>
+                        <div className="flex justify-between items-center mb-3">
+                          <h4 className="font-medium text-primary-900 flex items-center">
+                            <DollarSign className="w-4 h-4 mr-1" />
+                            Make a Payment
+                          </h4>
+                          <span className="text-sm text-gray-600">
+                            Available: <span className="font-semibold">{formatCurrency(savingsBalance)}</span>
+                          </span>
+                        </div>
                         <div className="space-y-3">
                           <Input
                             type="number"

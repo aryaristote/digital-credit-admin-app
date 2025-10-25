@@ -1,11 +1,8 @@
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CreditRepository } from './credit.repository';
 import { UsersService } from '../users/users.service';
+import { SavingsService } from '../savings/savings.service';
 import { CreateCreditRequestDto } from './dto/create-credit-request.dto';
 import { RepayCreditDto } from './dto/repay-credit.dto';
 import { CreditRequestResponseDto } from './dto/credit-request-response.dto';
@@ -18,6 +15,7 @@ export class CreditService {
   constructor(
     private readonly creditRepository: CreditRepository,
     private readonly usersService: UsersService,
+    private readonly savingsService: SavingsService,
     private readonly configService: ConfigService,
   ) {}
 
@@ -32,9 +30,7 @@ export class CreditService {
     }
 
     // Check if user has active credit requests
-    const activeCreditRequests = await this.creditRepository.findActiveByUserId(
-      userId,
-    );
+    const activeCreditRequests = await this.creditRepository.findActiveByUserId(userId);
     if (activeCreditRequests.length > 0) {
       throw new BadRequestException(
         'You already have an active credit request. Please complete it before requesting another.',
@@ -115,6 +111,21 @@ export class CreditService {
       );
     }
 
+    // Check if user has enough money in savings account
+    const savingsAccount = await this.savingsService.getAccount(userId);
+    if (Number(savingsAccount.balance) < repayCreditDto.amount) {
+      throw new BadRequestException(
+        `Insufficient funds. Your savings balance is ${Number(savingsAccount.balance).toFixed(2)} but you're trying to pay ${repayCreditDto.amount.toFixed(2)}`,
+      );
+    }
+
+    // Withdraw from savings account first
+    await this.savingsService.withdraw(userId, {
+      amount: repayCreditDto.amount,
+      notes: `Credit repayment for loan ${creditRequestId}`,
+    });
+
+    // Then process the credit repayment
     const repayment = await this.creditRepository.executeRepayment(
       creditRequestId,
       repayCreditDto.amount,
@@ -142,10 +153,7 @@ export class CreditService {
     return repayments.map((rep) => this.toCreditRepaymentResponseDto(rep));
   }
 
-  async deleteCreditRequest(
-    userId: string,
-    creditRequestId: string,
-  ): Promise<void> {
+  async deleteCreditRequest(userId: string, creditRequestId: string): Promise<void> {
     const creditRequest = await this.creditRepository.findById(creditRequestId);
 
     if (!creditRequest) {
@@ -157,7 +165,10 @@ export class CreditService {
     }
 
     // Only allow deletion of pending or rejected requests
-    if (creditRequest.status !== CreditStatus.PENDING && creditRequest.status !== CreditStatus.REJECTED) {
+    if (
+      creditRequest.status !== CreditStatus.PENDING &&
+      creditRequest.status !== CreditStatus.REJECTED
+    ) {
       throw new BadRequestException(
         'Only pending or rejected credit requests can be deleted',
       );
@@ -243,4 +254,3 @@ export class CreditService {
     };
   }
 }
-

@@ -122,7 +122,7 @@ export class CreditService {
     // Withdraw from savings account first
     await this.savingsService.withdraw(userId, {
       amount: repayCreditDto.amount,
-      notes: `Credit repayment for loan ${creditRequestId}`,
+      description: `Credit repayment for loan ${creditRequestId}`,
     });
 
     // Then process the credit repayment

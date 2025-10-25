@@ -1,7 +1,7 @@
-import { JwtService } from '@nestjs/jwt';
-import { Repository } from 'typeorm';
-import { User } from '../../shared/entities/user.entity';
-import { UserRole } from '../../common/enums/user-role.enum';
+import { JwtService } from "@nestjs/jwt";
+import { Repository } from "typeorm";
+import { User } from "../../shared/entities/user.entity";
+import { UserRole } from "../../common/enums/user-role.enum";
 export declare class AuthService {
     private userRepository;
     private jwtService;

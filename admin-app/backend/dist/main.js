@@ -6,10 +6,14 @@ const swagger_1 = require("@nestjs/swagger");
 const app_module_1 = require("./app.module");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
-    const apiPrefix = process.env.API_PREFIX || 'api/v1';
+    const apiPrefix = process.env.API_PREFIX || "api/v1";
     app.setGlobalPrefix(apiPrefix);
     app.enableCors({
-        origin: process.env.FRONTEND_URL || 'http://localhost:3100',
+        origin: [
+            "http://localhost:5174",
+            "http://localhost:3100",
+            "http://localhost:5173",
+        ],
         credentials: true,
     });
     app.useGlobalPipes(new common_1.ValidationPipe({
@@ -21,17 +25,17 @@ async function bootstrap() {
         },
     }));
     const config = new swagger_1.DocumentBuilder()
-        .setTitle('Digital Credit & Savings Platform - Admin API')
-        .setDescription('API documentation for admin operations including user management, credit approvals, and system analytics')
-        .setVersion('1.0')
+        .setTitle("Digital Credit & Savings Platform - Admin API")
+        .setDescription("API documentation for admin operations including user management, credit approvals, and system analytics")
+        .setVersion("1.0")
         .addBearerAuth({
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-        name: 'JWT',
-        description: 'Enter JWT token',
-        in: 'header',
-    }, 'JWT-auth')
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+        name: "JWT",
+        description: "Enter JWT token",
+        in: "header",
+    }, "JWT-auth")
         .build();
     const document = swagger_1.SwaggerModule.createDocument(app, config);
     swagger_1.SwaggerModule.setup(`${apiPrefix}/docs`, app, document);

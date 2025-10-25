@@ -23,24 +23,35 @@ let AuthController = class AuthController {
         this.authService = authService;
     }
     async login(loginDto) {
-        return await this.authService.login(loginDto.email, loginDto.password);
+        console.log("📥 [AUTH CONTROLLER] Received login request");
+        console.log("📧 [AUTH CONTROLLER] Email:", loginDto.email);
+        console.log("🔐 [AUTH CONTROLLER] Password length:", loginDto.password?.length || 0);
+        try {
+            const result = await this.authService.login(loginDto.email, loginDto.password);
+            console.log("✅ [AUTH CONTROLLER] Login successful, sending response");
+            return result;
+        }
+        catch (error) {
+            console.error("❌ [AUTH CONTROLLER] Login failed:", error.message);
+            throw error;
+        }
     }
 };
 exports.AuthController = AuthController;
 __decorate([
-    (0, common_1.Post)('login'),
+    (0, common_1.Post)("login"),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
-    (0, swagger_1.ApiOperation)({ summary: 'Admin login' }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Login successful' }),
-    (0, swagger_1.ApiResponse)({ status: 401, description: 'Invalid credentials' }),
+    (0, swagger_1.ApiOperation)({ summary: "Admin login" }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: "Login successful" }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: "Invalid credentials" }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [LoginDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
 exports.AuthController = AuthController = __decorate([
-    (0, swagger_1.ApiTags)('Admin Authentication'),
-    (0, common_1.Controller)('auth'),
+    (0, swagger_1.ApiTags)("Admin Authentication"),
+    (0, common_1.Controller)("auth"),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
 ], AuthController);
 //# sourceMappingURL=auth.controller.js.map

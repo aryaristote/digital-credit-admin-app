@@ -3,6 +3,7 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { User } from '../shared/entities/user.entity';
 import { CreditRequest } from '../shared/entities/credit-request.entity';
 import { SavingsAccount } from '../shared/entities/savings-account.entity';
+import { Transaction } from '../shared/entities/transaction.entity';
 
 export const typeOrmConfig = (
   configService: ConfigService,
@@ -13,7 +14,7 @@ export const typeOrmConfig = (
   username: configService.get('DB_USERNAME', 'postgres'),
   password: configService.get('DB_PASSWORD', 'root'),
   database: configService.get('DB_DATABASE', 'digital_credit_client'),
-  entities: [User, CreditRequest, SavingsAccount],
+  entities: [User, CreditRequest, SavingsAccount, Transaction],
   synchronize: configService.get('NODE_ENV') === 'development',
   logging: configService.get('NODE_ENV') === 'development',
 });

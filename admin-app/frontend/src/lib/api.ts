@@ -12,7 +12,12 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token = useAuthStore.getState().token;
-    console.log("🔐 [API] Request to:", config.url, "| Token:", token ? "Present" : "Missing");
+    console.log(
+      "🔐 [API] Request to:",
+      config.url,
+      "| Token:",
+      token ? "Present" : "Missing"
+    );
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -27,12 +32,21 @@ api.interceptors.request.use(
 // Response interceptor to handle errors
 api.interceptors.response.use(
   (response) => {
-    console.log("✅ [API] Response from:", response.config.url, "| Status:", response.status);
+    console.log(
+      "✅ [API] Response from:",
+      response.config.url,
+      "| Status:",
+      response.status
+    );
     return response;
   },
   async (error) => {
     const originalRequest = error.config;
-    console.error("❌ [API] Response error:", error.response?.status, error.response?.data);
+    console.error(
+      "❌ [API] Response error:",
+      error.response?.status,
+      error.response?.data
+    );
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       console.log("🔄 [API] Attempting token refresh...");
@@ -66,4 +80,3 @@ api.interceptors.response.use(
 );
 
 export default api;
-

@@ -110,7 +110,9 @@ export default function Dashboard() {
           <Card key={index} className="hover:shadow-lg transition-shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">{stat.title}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  {stat.title}
+                </p>
                 <p className="text-2xl font-bold text-gray-900 mt-2">
                   {stat.value}
                 </p>
@@ -149,7 +151,9 @@ export default function Dashboard() {
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">Background Jobs</span>
-              <span className="text-sm font-medium text-green-600">Running</span>
+              <span className="text-sm font-medium text-green-600">
+                Running
+              </span>
             </div>
           </div>
         </Card>
@@ -157,4 +161,3 @@ export default function Dashboard() {
     </div>
   );
 }
-

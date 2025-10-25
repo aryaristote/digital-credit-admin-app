@@ -1,4 +1,4 @@
-import { CreditService } from './credit.service';
+import { CreditService } from "./credit.service";
 export declare class CreditController {
     private readonly creditService;
     constructor(creditService: CreditService);

@@ -32,10 +32,18 @@ export default function Transactions() {
 
   const fetchTransactions = async () => {
     try {
+      console.log("🔄 [TRANSACTIONS] Fetching transactions...");
       const response = await api.get("/transactions");
-      setTransactions(response.data);
-    } catch (error) {
-      toast.error("Failed to fetch transactions");
+      console.log("✅ [TRANSACTIONS] Response received:", response.data);
+      // Backend returns paginated response: { data: [...], total, page, totalPages }
+      const transactionsData = response.data.data || response.data || [];
+      console.log("💰 [TRANSACTIONS] Transactions:", transactionsData.length, "transactions");
+      setTransactions(transactionsData);
+    } catch (error: any) {
+      console.error("❌ [TRANSACTIONS] Failed to fetch transactions:", error);
+      console.error("❌ [TRANSACTIONS] Error response:", error.response?.data);
+      console.error("❌ [TRANSACTIONS] Error status:", error.response?.status);
+      toast.error(error.response?.data?.message || "Failed to fetch transactions");
     } finally {
       setLoading(false);
     }

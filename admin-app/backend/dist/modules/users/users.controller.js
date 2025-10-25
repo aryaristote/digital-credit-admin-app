@@ -23,7 +23,10 @@ let UsersController = class UsersController {
         this.usersService = usersService;
     }
     async getUsers(page = 1, limit = 10) {
-        return await this.usersService.getAllUsers(page, limit);
+        console.log("📥 [USERS CONTROLLER] Fetching users - page:", page, "limit:", limit);
+        const result = await this.usersService.getAllUsers(page, limit);
+        console.log("✅ [USERS CONTROLLER] Found", result.total, "total users,", result.data.length, "in this page");
+        return result;
     }
     async getUserDetails(userId) {
         return await this.usersService.getUserDetails(userId);
@@ -38,43 +41,43 @@ let UsersController = class UsersController {
 exports.UsersController = UsersController;
 __decorate([
     (0, common_1.Get)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Get all users with pagination' }),
-    __param(0, (0, common_1.Query)('page')),
-    __param(1, (0, common_1.Query)('limit')),
+    (0, swagger_1.ApiOperation)({ summary: "Get all users with pagination" }),
+    __param(0, (0, common_1.Query)("page")),
+    __param(1, (0, common_1.Query)("limit")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Number]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "getUsers", null);
 __decorate([
-    (0, common_1.Get)(':id'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get user details' }),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Get)(":id"),
+    (0, swagger_1.ApiOperation)({ summary: "Get user details" }),
+    __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "getUserDetails", null);
 __decorate([
-    (0, common_1.Put)(':id/toggle-status'),
-    (0, swagger_1.ApiOperation)({ summary: 'Activate or deactivate user' }),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Put)(":id/toggle-status"),
+    (0, swagger_1.ApiOperation)({ summary: "Activate or deactivate user" }),
+    __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "toggleStatus", null);
 __decorate([
-    (0, common_1.Put)(':id/credit-score'),
-    (0, swagger_1.ApiOperation)({ summary: 'Update user credit score' }),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)('creditScore')),
+    (0, common_1.Put)(":id/credit-score"),
+    (0, swagger_1.ApiOperation)({ summary: "Update user credit score" }),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Body)("creditScore")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Number]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "updateCreditScore", null);
 exports.UsersController = UsersController = __decorate([
-    (0, swagger_1.ApiTags)('User Management'),
-    (0, common_1.Controller)('users'),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt'), admin_guard_1.AdminGuard),
-    (0, swagger_1.ApiBearerAuth)('JWT-auth'),
+    (0, swagger_1.ApiTags)("User Management"),
+    (0, common_1.Controller)("users"),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)("jwt"), admin_guard_1.AdminGuard),
+    (0, swagger_1.ApiBearerAuth)("JWT-auth"),
     __metadata("design:paramtypes", [users_service_1.UsersService])
 ], UsersController);
 //# sourceMappingURL=users.controller.js.map

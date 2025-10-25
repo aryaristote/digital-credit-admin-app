@@ -29,7 +29,9 @@ export default function CreditApprovals() {
   const [requests, setRequests] = useState<CreditRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [processingId, setProcessingId] = useState<string | null>(null);
-  const [filter, setFilter] = useState<"all" | "pending" | "approved" | "rejected">("pending");
+  const [filter, setFilter] = useState<
+    "all" | "pending" | "approved" | "rejected"
+  >("pending");
 
   useEffect(() => {
     fetchCreditRequests();
@@ -42,7 +44,11 @@ export default function CreditApprovals() {
       console.log("✅ [CREDIT] Response received:", response.data);
       // Backend returns paginated response: { data: [...], total, page, totalPages }
       const requestsData = response.data.data || response.data || [];
-      console.log("💳 [CREDIT] Credit requests:", requestsData.length, "requests");
+      console.log(
+        "💳 [CREDIT] Credit requests:",
+        requestsData.length,
+        "requests"
+      );
       setRequests(requestsData);
     } catch (error: any) {
       console.error("❌ [CREDIT] Failed to fetch credit requests:", error);
@@ -59,7 +65,7 @@ export default function CreditApprovals() {
   const handleApprove = async (requestId: string) => {
     setProcessingId(requestId);
     try {
-      await api.post(`/credit/${requestId}/approve`);
+      await api.put(`/credit/${requestId}/approve`);
       toast.success("Credit request approved successfully");
       fetchCreditRequests();
     } catch (error: any) {
@@ -75,7 +81,7 @@ export default function CreditApprovals() {
 
     setProcessingId(requestId);
     try {
-      await api.post(`/credit/${requestId}/reject`, { reason });
+      await api.put(`/credit/${requestId}/reject`, { reason });
       toast.success("Credit request rejected");
       fetchCreditRequests();
     } catch (error: any) {
@@ -150,7 +156,13 @@ export default function CreditApprovals() {
             size="sm"
           >
             <Check className="w-4 h-4 mr-1" />
-            Approved ({requests.filter((r) => r.status === "approved" || r.status === "active").length})
+            Approved (
+            {
+              requests.filter(
+                (r) => r.status === "approved" || r.status === "active"
+              ).length
+            }
+            )
           </Button>
           <Button
             variant={filter === "rejected" ? "primary" : "outline"}
@@ -181,7 +193,9 @@ export default function CreditApprovals() {
                     <p className="font-medium text-gray-900">
                       {request.user?.firstName} {request.user?.lastName}
                     </p>
-                    <p className="text-xs text-gray-500">{request.user?.email}</p>
+                    <p className="text-xs text-gray-500">
+                      {request.user?.email}
+                    </p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Credit Score</p>
@@ -267,4 +281,3 @@ export default function CreditApprovals() {
     </div>
   );
 }
-

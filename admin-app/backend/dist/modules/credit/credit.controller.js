@@ -27,7 +27,10 @@ let CreditController = class CreditController {
         return await this.creditService.getPendingRequests(page, limit);
     }
     async getAllRequests(page = 1, limit = 10, status) {
-        return await this.creditService.getAllRequests(page, limit, status);
+        console.log("📥 [CREDIT CONTROLLER] Fetching credit requests - status:", status || "all");
+        const result = await this.creditService.getAllRequests(page, limit, status);
+        console.log("✅ [CREDIT CONTROLLER] Found", result.total, "credit requests");
+        return result;
     }
     async getStats() {
         return await this.creditService.getCreditStats();
@@ -41,56 +44,56 @@ let CreditController = class CreditController {
 };
 exports.CreditController = CreditController;
 __decorate([
-    (0, common_1.Get)('pending'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get pending credit requests' }),
-    __param(0, (0, common_1.Query)('page')),
-    __param(1, (0, common_1.Query)('limit')),
+    (0, common_1.Get)("pending"),
+    (0, swagger_1.ApiOperation)({ summary: "Get pending credit requests" }),
+    __param(0, (0, common_1.Query)("page")),
+    __param(1, (0, common_1.Query)("limit")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Number]),
     __metadata("design:returntype", Promise)
 ], CreditController.prototype, "getPendingRequests", null);
 __decorate([
-    (0, common_1.Get)('all'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get all credit requests' }),
-    __param(0, (0, common_1.Query)('page')),
-    __param(1, (0, common_1.Query)('limit')),
-    __param(2, (0, common_1.Query)('status')),
+    (0, common_1.Get)("all"),
+    (0, swagger_1.ApiOperation)({ summary: "Get all credit requests" }),
+    __param(0, (0, common_1.Query)("page")),
+    __param(1, (0, common_1.Query)("limit")),
+    __param(2, (0, common_1.Query)("status")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Number, String]),
     __metadata("design:returntype", Promise)
 ], CreditController.prototype, "getAllRequests", null);
 __decorate([
-    (0, common_1.Get)('stats'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get credit statistics' }),
+    (0, common_1.Get)("stats"),
+    (0, swagger_1.ApiOperation)({ summary: "Get credit statistics" }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], CreditController.prototype, "getStats", null);
 __decorate([
-    (0, common_1.Put)(':id/approve'),
-    (0, swagger_1.ApiOperation)({ summary: 'Approve credit request' }),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, current_user_decorator_1.CurrentUser)('id')),
-    __param(2, (0, common_1.Body)('approvedAmount')),
+    (0, common_1.Put)(":id/approve"),
+    (0, swagger_1.ApiOperation)({ summary: "Approve credit request" }),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, current_user_decorator_1.CurrentUser)("id")),
+    __param(2, (0, common_1.Body)("approvedAmount")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String, Number]),
     __metadata("design:returntype", Promise)
 ], CreditController.prototype, "approveRequest", null);
 __decorate([
-    (0, common_1.Put)(':id/reject'),
-    (0, swagger_1.ApiOperation)({ summary: 'Reject credit request' }),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, current_user_decorator_1.CurrentUser)('id')),
-    __param(2, (0, common_1.Body)('reason')),
+    (0, common_1.Put)(":id/reject"),
+    (0, swagger_1.ApiOperation)({ summary: "Reject credit request" }),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, current_user_decorator_1.CurrentUser)("id")),
+    __param(2, (0, common_1.Body)("reason")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", Promise)
 ], CreditController.prototype, "rejectRequest", null);
 exports.CreditController = CreditController = __decorate([
-    (0, swagger_1.ApiTags)('Credit Management'),
-    (0, common_1.Controller)('credit'),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt'), admin_guard_1.AdminGuard),
-    (0, swagger_1.ApiBearerAuth)('JWT-auth'),
+    (0, swagger_1.ApiTags)("Credit Management"),
+    (0, common_1.Controller)("credit"),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)("jwt"), admin_guard_1.AdminGuard),
+    (0, swagger_1.ApiBearerAuth)("JWT-auth"),
     __metadata("design:paramtypes", [credit_service_1.CreditService])
 ], CreditController);
 //# sourceMappingURL=credit.controller.js.map

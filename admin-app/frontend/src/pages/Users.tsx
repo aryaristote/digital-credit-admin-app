@@ -70,7 +70,9 @@ export default function Users() {
       fetchUsers();
     } catch (error: any) {
       console.error("Failed to update user status:", error);
-      toast.error(error.response?.data?.message || "Failed to update user status");
+      toast.error(
+        error.response?.data?.message || "Failed to update user status"
+      );
     } finally {
       setUpdatingUserId(null);
     }
@@ -141,7 +143,10 @@ export default function Users() {
             </thead>
             <tbody>
               {filteredUsers.map((user) => (
-                <tr key={user.id} className="border-b border-gray-100 hover:bg-gray-50">
+                <tr
+                  key={user.id}
+                  className="border-b border-gray-100 hover:bg-gray-50"
+                >
                   <td className="py-3 px-4">
                     <div>
                       <p className="font-medium text-gray-900">
@@ -219,4 +224,3 @@ export default function Users() {
     </div>
   );
 }
-

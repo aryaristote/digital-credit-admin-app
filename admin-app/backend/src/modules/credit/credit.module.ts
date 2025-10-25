@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/module';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CreditController } from './credit.controller';
 import { CreditService } from './credit.service';

@@ -14,11 +14,15 @@ export class CreditService {
   ) {}
 
   async getPendingRequests(page: number = 1, limit: number = 10) {
+    // Ensure page and limit are valid numbers
+    const pageNum = Number(page) || 1;
+    const limitNum = Number(limit) || 10;
+
     const [requests, total] = await this.creditRequestRepository.findAndCount({
       where: { status: CreditStatus.PENDING },
       relations: ['user'],
-      skip: (page - 1) * limit,
-      take: limit,
+      skip: (pageNum - 1) * limitNum,
+      take: limitNum,
       order: { createdAt: 'ASC' },
     });
 
@@ -38,12 +42,16 @@ export class CreditService {
         createdAt: req.createdAt,
       })),
       total,
-      page,
-      totalPages: Math.ceil(total / limit),
+      page: pageNum,
+      totalPages: Math.ceil(total / limitNum),
     };
   }
 
   async getAllRequests(page: number = 1, limit: number = 10, status?: string) {
+    // Ensure page and limit are valid numbers
+    const pageNum = Number(page) || 1;
+    const limitNum = Number(limit) || 10;
+
     const where: any = {};
     if (status) {
       where.status = status;
@@ -52,16 +60,16 @@ export class CreditService {
     const [requests, total] = await this.creditRequestRepository.findAndCount({
       where,
       relations: ['user'],
-      skip: (page - 1) * limit,
-      take: limit,
+      skip: (pageNum - 1) * limitNum,
+      take: limitNum,
       order: { createdAt: 'DESC' },
     });
 
     return {
       data: requests,
       total,
-      page,
-      totalPages: Math.ceil(total / limit),
+      page: pageNum,
+      totalPages: Math.ceil(total / limitNum),
     };
   }
 

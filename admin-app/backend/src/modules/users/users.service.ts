@@ -15,10 +15,14 @@ export class UsersService {
   ) {}
 
   async getAllUsers(page: number = 1, limit: number = 10) {
+    // Ensure page and limit are valid numbers
+    const pageNum = Number(page) || 1;
+    const limitNum = Number(limit) || 10;
+
     const [users, total] = await this.userRepository.findAndCount({
       where: { role: UserRole.CUSTOMER },
-      skip: (page - 1) * limit,
-      take: limit,
+      skip: (pageNum - 1) * limitNum,
+      take: limitNum,
       order: { createdAt: 'DESC' },
     });
 
@@ -33,8 +37,8 @@ export class UsersService {
         createdAt: user.createdAt,
       })),
       total,
-      page,
-      totalPages: Math.ceil(total / limit),
+      page: pageNum,
+      totalPages: Math.ceil(total / limitNum),
     };
   }
 

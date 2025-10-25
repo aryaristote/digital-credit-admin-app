@@ -1,9 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Transaction, TransactionStatus } from '../../shared/entities/transaction.entity';
-import { SavingsAccount } from '../../shared/entities/savings-account.entity';
-import { User } from '../../shared/entities/user.entity';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import {
+  Transaction,
+  TransactionStatus,
+} from "../../shared/entities/transaction.entity";
+import { SavingsAccount } from "../../shared/entities/savings-account.entity";
+import { User } from "../../shared/entities/user.entity";
 
 @Injectable()
 export class TransactionsService {
@@ -13,20 +16,28 @@ export class TransactionsService {
     @InjectRepository(SavingsAccount)
     private savingsAccountRepository: Repository<SavingsAccount>,
     @InjectRepository(User)
-    private userRepository: Repository<User>,
+    private userRepository: Repository<User>
   ) {}
 
-  async getAllTransactions(page: number = 1, limit: number = 50, type?: string) {
+  async getAllTransactions(
+    page: number = 1,
+    limit: number = 50,
+    type?: string
+  ) {
+    // Ensure page and limit are valid numbers
+    const pageNum = Number(page) || 1;
+    const limitNum = Number(limit) || 50;
+
     const queryBuilder = this.transactionRepository
-      .createQueryBuilder('transaction')
-      .leftJoinAndSelect('transaction.savingsAccount', 'savingsAccount')
-      .leftJoinAndSelect('savingsAccount.user', 'user')
-      .orderBy('transaction.createdAt', 'DESC')
-      .skip((page - 1) * limit)
-      .take(limit);
+      .createQueryBuilder("transaction")
+      .leftJoinAndSelect("transaction.savingsAccount", "savingsAccount")
+      .leftJoinAndSelect("savingsAccount.user", "user")
+      .orderBy("transaction.createdAt", "DESC")
+      .skip((pageNum - 1) * limitNum)
+      .take(limitNum);
 
     if (type) {
-      queryBuilder.andWhere('transaction.type = :type', { type });
+      queryBuilder.andWhere("transaction.type = :type", { type });
     }
 
     const [transactions, total] = await queryBuilder.getManyAndCount();
@@ -51,36 +62,47 @@ export class TransactionsService {
         createdAt: txn.createdAt,
       })),
       total,
-      page,
-      totalPages: Math.ceil(total / limit),
+      page: pageNum,
+      totalPages: Math.ceil(total / limitNum),
     };
   }
 
   async getTransactionStats() {
     const totalDepositsResult = await this.transactionRepository
-      .createQueryBuilder('transaction')
-      .select('SUM(transaction.amount)', 'total')
-      .where('transaction.type = :type', { type: 'deposit' })
-      .andWhere('transaction.status = :status', { status: TransactionStatus.COMPLETED })
+      .createQueryBuilder("transaction")
+      .select("SUM(transaction.amount)", "total")
+      .where("transaction.type = :type", { type: "deposit" })
+      .andWhere("transaction.status = :status", {
+        status: TransactionStatus.COMPLETED,
+      })
       .getRawOne();
 
     const totalWithdrawalsResult = await this.transactionRepository
-      .createQueryBuilder('transaction')
-      .select('SUM(transaction.amount)', 'total')
-      .where('transaction.type = :type', { type: 'withdrawal' })
-      .andWhere('transaction.status = :status', { status: TransactionStatus.COMPLETED })
+      .createQueryBuilder("transaction")
+      .select("SUM(transaction.amount)", "total")
+      .where("transaction.type = :type", { type: "withdrawal" })
+      .andWhere("transaction.status = :status", {
+        status: TransactionStatus.COMPLETED,
+      })
       .getRawOne();
 
-    const [totalCount, pendingCount, completedCount, failedCount] = await Promise.all([
-      this.transactionRepository.count(),
-      this.transactionRepository.count({ where: { status: TransactionStatus.PENDING } }),
-      this.transactionRepository.count({ where: { status: TransactionStatus.COMPLETED } }),
-      this.transactionRepository.count({ where: { status: TransactionStatus.FAILED } }),
-    ]);
+    const [totalCount, pendingCount, completedCount, failedCount] =
+      await Promise.all([
+        this.transactionRepository.count(),
+        this.transactionRepository.count({
+          where: { status: TransactionStatus.PENDING },
+        }),
+        this.transactionRepository.count({
+          where: { status: TransactionStatus.COMPLETED },
+        }),
+        this.transactionRepository.count({
+          where: { status: TransactionStatus.FAILED },
+        }),
+      ]);
 
     return {
-      totalDeposits: parseFloat(totalDepositsResult?.total || '0'),
-      totalWithdrawals: parseFloat(totalWithdrawalsResult?.total || '0'),
+      totalDeposits: parseFloat(totalDepositsResult?.total || "0"),
+      totalWithdrawals: parseFloat(totalWithdrawalsResult?.total || "0"),
       totalCount,
       pendingCount,
       completedCount,
@@ -88,4 +110,3 @@ export class TransactionsService {
     };
   }
 }
-

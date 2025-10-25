@@ -347,8 +347,16 @@ export default function Credit() {
                     <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                       <div className="flex items-start">
                         <div className="flex-shrink-0">
-                          <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                          <svg
+                            className="h-5 w-5 text-yellow-400"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                              clipRule="evenodd"
+                            />
                           </svg>
                         </div>
                         <div className="ml-3">
@@ -356,18 +364,34 @@ export default function Credit() {
                             ⏳ Awaiting Admin Approval
                           </h3>
                           <div className="mt-2 text-sm text-yellow-700">
-                            <p>Your credit request is currently under review by our administrators.</p>
+                            <p>
+                              Your credit request is currently under review by
+                              our administrators.
+                            </p>
                             <ul className="mt-2 list-disc list-inside space-y-1">
-                              <li>Requested Amount: {formatCurrency(request.requestedAmount)}</li>
+                              <li>
+                                Requested Amount:{" "}
+                                {formatCurrency(request.requestedAmount)}
+                              </li>
                               <li>Term: {request.termMonths} months</li>
                               <li>Interest Rate: {request.interestRate}%</li>
                             </ul>
                             <p className="mt-2 font-medium">
-                              You will be notified once the decision is made and can make payments only after approval.
+                              You will be notified once the decision is made and
+                              can make payments only after approval.
                             </p>
                           </div>
                         </div>
                       </div>
+                    </div>
+                  )}
+
+                  {request.status === "completed" && (
+                    <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                      <p className="text-sm text-green-800">
+                        <strong>✅ Credit Completed:</strong> This credit has been fully repaid. 
+                        You can delete it from your records if you no longer need to reference it.
+                      </p>
                     </div>
                   )}
 
@@ -388,7 +412,8 @@ export default function Credit() {
                       )}
                     </div>
                     {(request.status === "pending" ||
-                      request.status === "rejected") && (
+                      request.status === "rejected" ||
+                      request.status === "completed") && (
                       <Button
                         variant="outline"
                         size="sm"

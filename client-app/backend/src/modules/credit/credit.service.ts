@@ -50,9 +50,15 @@ export class CreditService {
       status: CreditStatus.PENDING,
     });
 
-    console.log(`📝 [CREDIT REQUEST] Created credit request ${creditRequest.id} with PENDING status`);
-    console.log(`👤 [CREDIT REQUEST] User: ${user.email}, Credit Score: ${user.creditScore}`);
-    console.log(`💰 [CREDIT REQUEST] Amount: ${createCreditRequestDto.requestedAmount}, Term: ${createCreditRequestDto.termMonths} months`);
+    console.log(
+      `📝 [CREDIT REQUEST] Created credit request ${creditRequest.id} with PENDING status`,
+    );
+    console.log(
+      `👤 [CREDIT REQUEST] User: ${user.email}, Credit Score: ${user.creditScore}`,
+    );
+    console.log(
+      `💰 [CREDIT REQUEST] Amount: ${createCreditRequestDto.requestedAmount}, Term: ${createCreditRequestDto.termMonths} months`,
+    );
 
     // Return the request as PENDING (no automatic approval)
     return this.toCreditRequestResponseDto(creditRequest);
@@ -165,13 +171,14 @@ export class CreditService {
       throw new BadRequestException('Unauthorized access to credit request');
     }
 
-    // Only allow deletion of pending or rejected requests
+    // Only allow deletion of pending, rejected, or completed requests
     if (
       creditRequest.status !== CreditStatus.PENDING &&
-      creditRequest.status !== CreditStatus.REJECTED
+      creditRequest.status !== CreditStatus.REJECTED &&
+      creditRequest.status !== CreditStatus.COMPLETED
     ) {
       throw new BadRequestException(
-        'Only pending or rejected credit requests can be deleted',
+        'Only pending, rejected, or completed credit requests can be deleted',
       );
     }
 

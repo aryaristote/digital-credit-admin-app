@@ -12,7 +12,18 @@ import Analytics from "./pages/Analytics";
 function App() {
   return (
     <BrowserRouter>
-      <Toaster position="top-right" richColors />
+      <Toaster 
+        position="top-right" 
+        richColors 
+        expand={true}
+        toastOptions={{
+          style: {
+            padding: '16px',
+            gap: '8px',
+          },
+          className: 'toast-custom',
+        }}
+      />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route

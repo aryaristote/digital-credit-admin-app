@@ -42,13 +42,18 @@ export default function Users() {
 
   const fetchUsers = async () => {
     try {
+      console.log("🔄 [USERS] Fetching users...");
       const response = await api.get("/users");
+      console.log("✅ [USERS] Response received:", response.data);
       // Backend returns paginated response: { data: [...], total, page, totalPages }
       const usersData = response.data.data || response.data || [];
+      console.log("👥 [USERS] Users data:", usersData.length, "users");
       setUsers(usersData);
       setFilteredUsers(usersData);
     } catch (error: any) {
-      console.error("Failed to fetch users:", error);
+      console.error("❌ [USERS] Failed to fetch users:", error);
+      console.error("❌ [USERS] Error response:", error.response?.data);
+      console.error("❌ [USERS] Error status:", error.response?.status);
       toast.error(error.response?.data?.message || "Failed to fetch users");
     } finally {
       setLoading(false);

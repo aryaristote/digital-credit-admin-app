@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Plus, AlertCircle, CheckCircle, Clock, Trash2, DollarSign } from "lucide-react";
+import {
+  Plus,
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  Trash2,
+  DollarSign,
+} from "lucide-react";
 import { toast } from "sonner";
 import {
   Card,
@@ -72,16 +79,23 @@ export default function Credit() {
     }
   };
 
-  const handleRepayment = async (requestId: string, remainingBalance: number) => {
+  const handleRepayment = async (
+    requestId: string,
+    remainingBalance: number
+  ) => {
     const amount = parseFloat(repaymentAmount);
-    
+
     if (!amount || amount <= 0) {
       toast.error("Please enter a valid amount");
       return;
     }
 
     if (amount > remainingBalance) {
-      toast.error(`Amount cannot exceed remaining balance of ${formatCurrency(remainingBalance)}`);
+      toast.error(
+        `Amount cannot exceed remaining balance of ${formatCurrency(
+          remainingBalance
+        )}`
+      );
       return;
     }
 
@@ -253,8 +267,8 @@ export default function Credit() {
                       </div>
 
                       {/* Repayment Form */}
-                      <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                        <h4 className="font-medium text-green-900 mb-3 flex items-center">
+                      <div className="p-4 bg-primary-50 border border-primary-200 rounded-lg">
+                        <h4 className="font-medium text-primary-900 mb-3 flex items-center">
                           <DollarSign className="w-4 h-4 mr-1" />
                           Make a Payment
                         </h4>
@@ -275,11 +289,16 @@ export default function Credit() {
                             onChange={(e) => setRepaymentNotes(e.target.value)}
                           />
                           <Button
-                            onClick={() => handleRepayment(request.id, remaining)}
+                            onClick={() =>
+                              handleRepayment(request.id, remaining)
+                            }
                             isLoading={repayingId === request.id}
                             className="w-full"
                           >
-                            Pay {repaymentAmount ? formatCurrency(parseFloat(repaymentAmount)) : ""}
+                            Pay{" "}
+                            {repaymentAmount
+                              ? formatCurrency(parseFloat(repaymentAmount))
+                              : ""}
                           </Button>
                         </div>
                       </div>

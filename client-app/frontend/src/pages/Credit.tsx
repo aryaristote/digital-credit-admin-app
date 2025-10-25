@@ -51,6 +51,15 @@ export default function Credit() {
   const fetchCreditRequests = async () => {
     try {
       const response: any = await api.get("/credit/requests");
+      console.log("🔍 [CLIENT] Fetched credit requests:", response.data);
+      response.data.forEach((req: any, index: number) => {
+        console.log(`📋 [CLIENT] Request ${index + 1}:`, {
+          id: req.id,
+          status: req.status,
+          approvedAmount: req.approvedAmount,
+          requestedAmount: req.requestedAmount
+        });
+      });
       setRequests(response.data || []);
     } catch (error) {
       console.error("Failed to fetch credit requests", error);
@@ -337,8 +346,9 @@ export default function Credit() {
                   {request.status === "pending" && (
                     <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                       <p className="text-sm text-yellow-800">
-                        <strong>⏳ Pending Approval:</strong> Your credit request is under review. 
-                        You will be able to make payments once it's approved by an administrator.
+                        <strong>⏳ Pending Approval:</strong> Your credit
+                        request is under review. You will be able to make
+                        payments once it's approved by an administrator.
                       </p>
                     </div>
                   )}

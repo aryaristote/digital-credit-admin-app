@@ -186,10 +186,14 @@ export class CreditService {
       600,
     );
 
+    console.log(`🔍 [AUTO APPROVAL] Processing credit request ${creditRequestId}`);
+    console.log(`📊 [AUTO APPROVAL] Credit score: ${creditScore}, Threshold: ${approvalThreshold}`);
+
     const creditRequest = await this.creditRepository.findById(creditRequestId);
 
     if (creditScore >= approvalThreshold) {
       // Approve the request
+      console.log(`✅ [AUTO APPROVAL] Auto-approving credit request ${creditRequestId}`);
       const dueDate = new Date();
       dueDate.setMonth(dueDate.getMonth() + creditRequest.termMonths);
 
@@ -199,11 +203,14 @@ export class CreditService {
         approvedAt: new Date(),
         dueDate,
       });
+      console.log(`🎉 [AUTO APPROVAL] Credit request ${creditRequestId} approved and activated`);
     } else {
       // Reject the request
+      console.log(`❌ [AUTO APPROVAL] Auto-rejecting credit request ${creditRequestId}`);
       await this.creditRepository.updateStatus(creditRequestId, CreditStatus.REJECTED, {
         rejectionReason: `Credit score ${creditScore} is below minimum threshold of ${approvalThreshold}`,
       });
+      console.log(`🚫 [AUTO APPROVAL] Credit request ${creditRequestId} rejected`);
     }
   }
 

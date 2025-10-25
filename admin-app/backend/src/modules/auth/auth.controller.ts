@@ -1,9 +1,22 @@
 import { Controller, Post, Body, HttpCode, HttpStatus } from "@nestjs/common";
-import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiResponse, ApiProperty } from "@nestjs/swagger";
+import { IsEmail, IsString, MinLength } from "class-validator";
 import { AuthService } from "./auth.service";
 
 class LoginDto {
+  @ApiProperty({
+    example: "admin@digitalcredit.com",
+    description: "Admin email address",
+  })
+  @IsEmail()
   email: string;
+
+  @ApiProperty({
+    example: "Admin@123456",
+    description: "Admin password",
+  })
+  @IsString()
+  @MinLength(8)
   password: string;
 }
 

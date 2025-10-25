@@ -38,9 +38,12 @@ export default function CreditApprovals() {
   const fetchCreditRequests = async () => {
     try {
       const response = await api.get("/credit/all");
-      setRequests(response.data);
-    } catch (error) {
-      toast.error("Failed to fetch credit requests");
+      // Backend returns paginated response: { data: [...], total, page, totalPages }
+      const requestsData = response.data.data || response.data || [];
+      setRequests(requestsData);
+    } catch (error: any) {
+      console.error("Failed to fetch credit requests:", error);
+      toast.error(error.response?.data?.message || "Failed to fetch credit requests");
     } finally {
       setLoading(false);
     }

@@ -5,6 +5,7 @@ This guide explains how to create admin users for the Digital Credit Platform ad
 ## Method 1: Using the Seed Script (Recommended) ⭐
 
 ### Step 1: Ensure database exists
+
 ```bash
 # Connect to PostgreSQL
 psql -U postgres
@@ -15,12 +16,14 @@ CREATE DATABASE digital_credit_admin;
 ```
 
 ### Step 2: Run the seed script
+
 ```bash
 cd admin-app/backend
 npm run seed:admin
 ```
 
 ### Output:
+
 ```
 ✅ Database connected
 🎉 Admin user created successfully!
@@ -33,6 +36,7 @@ Password: Admin@123456
 ```
 
 ### Step 3: Login
+
 - Go to: `http://localhost:5174/login`
 - Email: `admin@digitalcredit.com`
 - Password: `Admin@123456`
@@ -87,6 +91,7 @@ I can create a special setup endpoint that only works once:
 ### Step 1: Add setup endpoint (I'll create this for you)
 
 ### Step 2: Call the endpoint
+
 ```bash
 curl -X POST http://localhost:3002/api/v1/auth/setup \
   -H "Content-Type: application/json" \
@@ -136,12 +141,15 @@ Password: Admin@123456
 ## Creating Additional Admins
 
 ### Option 1: Use existing admin to create new ones
+
 Once you have one admin, you can add endpoints to create more admins from the dashboard.
 
 ### Option 2: Run seed script with different credentials
+
 Modify `src/scripts/create-admin.ts` with new credentials and run again.
 
 ### Option 3: Create Admin Management in Dashboard
+
 I can add an admin management page to create/manage other admins.
 
 ---
@@ -149,21 +157,25 @@ I can add an admin management page to create/manage other admins.
 ## Troubleshooting
 
 ### Error: "Admin user already exists"
+
 - The script detected an existing admin
 - Use the existing credentials or manually delete the admin from the database
 
 ### Error: "Database connection failed"
+
 - Ensure PostgreSQL is running
 - Check your `.env` file has correct database credentials
 - Verify the database `digital_credit_admin` exists
 
 ### Error: "Cannot find module 'bcrypt'"
+
 ```bash
 npm install bcrypt
 npm install --save-dev @types/bcrypt
 ```
 
 ### Error: "Cannot find module 'ts-node'"
+
 ```bash
 npm install --save-dev ts-node
 ```
@@ -213,4 +225,3 @@ After creating your admin user:
 ---
 
 **Need help?** Check the main README or documentation files!
-

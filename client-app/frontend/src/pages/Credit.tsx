@@ -334,6 +334,15 @@ export default function Credit() {
                     </div>
                   )}
 
+                  {request.status === "pending" && (
+                    <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                      <p className="text-sm text-yellow-800">
+                        <strong>⏳ Pending Approval:</strong> Your credit request is under review. 
+                        You will be able to make payments once it's approved by an administrator.
+                      </p>
+                    </div>
+                  )}
+
                   {request.status === "rejected" && request.rejectionReason && (
                     <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
                       <p className="text-sm text-red-800">

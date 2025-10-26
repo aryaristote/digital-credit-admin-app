@@ -3,12 +3,14 @@ import { ConfigService } from '@nestjs/config';
 import { CreditRepository } from './credit.repository';
 import { UsersService } from '../users/users.service';
 import { SavingsService } from '../savings/savings.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { CreateCreditRequestDto } from './dto/create-credit-request.dto';
 import { RepayCreditDto } from './dto/repay-credit.dto';
 import { CreditRequestResponseDto } from './dto/credit-request-response.dto';
 import { CreditRepaymentResponseDto } from './dto/credit-repayment-response.dto';
 import { CreditRequest, CreditStatus } from './entities/credit-request.entity';
 import { CreditRepayment } from './entities/credit-repayment.entity';
+import { NotificationType } from '../notifications/entities/notification.entity';
 
 @Injectable()
 export class CreditService {
@@ -16,6 +18,7 @@ export class CreditService {
     private readonly creditRepository: CreditRepository,
     private readonly usersService: UsersService,
     private readonly savingsService: SavingsService,
+    private readonly notificationsService: NotificationsService,
     private readonly configService: ConfigService,
   ) {}
 
@@ -59,6 +62,21 @@ export class CreditService {
     console.log(
       `💰 [CREDIT REQUEST] Amount: ${createCreditRequestDto.requestedAmount}, Term: ${createCreditRequestDto.termMonths} months`,
     );
+
+    // Create notification for credit request submission
+    try {
+      await this.notificationsService.createNotification(
+        userId,
+        'Credit Request Submitted',
+        `Your credit request of ${createCreditRequestDto.requestedAmount} has been submitted and is pending admin approval.`,
+        NotificationType.INFO,
+        '/credit',
+        { creditRequestId: creditRequest.id, amount: createCreditRequestDto.requestedAmount },
+      );
+    } catch (error) {
+      console.error('Failed to create notification:', error);
+      // Don't fail the request if notification fails
+    }
 
     // Return the request as PENDING (no automatic approval)
     return this.toCreditRequestResponseDto(creditRequest);
@@ -138,6 +156,39 @@ export class CreditService {
       repayCreditDto.amount,
       repayCreditDto.notes,
     );
+
+    // Get updated credit request to check if completed
+    const updatedCreditRequest = await this.creditRepository.findById(creditRequestId);
+    const totalOwed = Number(updatedCreditRequest.approvedAmount) * (1 + Number(updatedCreditRequest.interestRate) / 100);
+    const remainingBalance = totalOwed - Number(updatedCreditRequest.totalRepaid);
+
+    // Create notification for credit repayment
+    try {
+      if (remainingBalance <= 0) {
+        // Credit fully repaid
+        await this.notificationsService.createNotification(
+          userId,
+          'Credit Fully Repaid',
+          `Congratulations! Your credit of ${updatedCreditRequest.approvedAmount} has been fully repaid.`,
+          NotificationType.SUCCESS,
+          '/credit',
+          { creditRequestId, amount: repayCreditDto.amount, completed: true },
+        );
+      } else {
+        // Partial repayment
+        await this.notificationsService.createNotification(
+          userId,
+          'Credit Payment Received',
+          `Your payment of ${repayCreditDto.amount} has been processed. Remaining balance: ${remainingBalance.toFixed(2)}`,
+          NotificationType.SUCCESS,
+          '/credit',
+          { creditRequestId, amount: repayCreditDto.amount, remainingBalance },
+        );
+      }
+    } catch (error) {
+      console.error('Failed to create notification:', error);
+      // Don't fail the repayment if notification fails
+    }
 
     return this.toCreditRepaymentResponseDto(repayment);
   }

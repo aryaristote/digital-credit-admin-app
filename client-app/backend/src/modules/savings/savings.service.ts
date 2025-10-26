@@ -5,6 +5,7 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { SavingsRepository } from './savings.repository';
+import { NotificationsService } from '../notifications/notifications.service';
 import { CreateSavingsAccountDto } from './dto/create-savings-account.dto';
 import { DepositDto } from './dto/deposit.dto';
 import { WithdrawDto } from './dto/withdraw.dto';
@@ -12,10 +13,14 @@ import { SavingsAccountResponseDto } from './dto/savings-account-response.dto';
 import { TransactionResponseDto } from './dto/transaction-response.dto';
 import { SavingsAccount } from './entities/savings-account.entity';
 import { Transaction } from './entities/transaction.entity';
+import { NotificationType } from '../notifications/entities/notification.entity';
 
 @Injectable()
 export class SavingsService {
-  constructor(private readonly savingsRepository: SavingsRepository) {}
+  constructor(
+    private readonly savingsRepository: SavingsRepository,
+    private readonly notificationsService: NotificationsService,
+  ) {}
 
   async createAccount(
     userId: string,
@@ -71,6 +76,24 @@ export class SavingsService {
       depositDto.description || 'Deposit',
     );
 
+    // Get updated account balance
+    const updatedAccount = await this.savingsRepository.findByUserId(userId);
+
+    // Create notification for deposit
+    try {
+      await this.notificationsService.createNotification(
+        userId,
+        'Deposit Successful',
+        `Your deposit of ${depositDto.amount} has been processed. New balance: ${updatedAccount.balance}`,
+        NotificationType.SUCCESS,
+        '/savings',
+        { transactionId: transaction.id, amount: depositDto.amount, balance: updatedAccount.balance },
+      );
+    } catch (error) {
+      console.error('Failed to create notification:', error);
+      // Don't fail the deposit if notification fails
+    }
+
     return this.toTransactionResponseDto(transaction);
   }
 
@@ -100,6 +123,24 @@ export class SavingsService {
       withdrawDto.amount,
       withdrawDto.description || 'Withdrawal',
     );
+
+    // Get updated account balance
+    const updatedAccount = await this.savingsRepository.findByUserId(userId);
+
+    // Create notification for withdrawal
+    try {
+      await this.notificationsService.createNotification(
+        userId,
+        'Withdrawal Successful',
+        `Your withdrawal of ${withdrawDto.amount} has been processed. New balance: ${updatedAccount.balance}`,
+        NotificationType.SUCCESS,
+        '/savings',
+        { transactionId: transaction.id, amount: withdrawDto.amount, balance: updatedAccount.balance },
+      );
+    } catch (error) {
+      console.error('Failed to create notification:', error);
+      // Don't fail the withdrawal if notification fails
+    }
 
     return this.toTransactionResponseDto(transaction);
   }

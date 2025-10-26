@@ -31,7 +31,9 @@ export default function Profile() {
   const onSubmit = async (data: any) => {
     setIsLoading(true);
     try {
-      const response: any = await api.put("/users/profile", data);
+      // Remove email from the data since it's not updatable
+      const { email, ...updateData } = data;
+      const response: any = await api.put("/users/profile", updateData);
       updateUser(response.data);
       toast.success("Profile updated successfully");
     } catch (error: any) {

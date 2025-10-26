@@ -58,7 +58,7 @@ export default function Transactions() {
     const styles = {
       deposit: "bg-green-100 text-green-800",
       withdrawal: "bg-orange-100 text-orange-800",
-      credit_payment: "bg-blue-100 text-blue-800",
+      credit_payment: "bg-primary-100 text-primary-800",
       credit_disbursement: "bg-purple-100 text-purple-800",
     };
 
@@ -200,7 +200,7 @@ export default function Transactions() {
                           ? "text-green-600"
                           : txn.type === "withdrawal"
                           ? "text-red-600"
-                          : "text-blue-600"
+                          : "text-primary-600"
                       }`}
                     >
                       {txn.type === "deposit" ? "+" : "-"}

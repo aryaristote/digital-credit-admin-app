@@ -22,7 +22,7 @@ export default function Analytics() {
       change: "+8.2%",
       trend: "up",
       icon: CreditCard,
-      color: "text-blue-600",
+      color: "text-primary-600",
     },
     {
       title: "New Customers",
@@ -88,7 +88,7 @@ export default function Analytics() {
           <div className="space-y-4">
             {[
               { range: "750+", percentage: 35, color: "bg-green-500" },
-              { range: "700-749", percentage: 28, color: "bg-blue-500" },
+              { range: "700-749", percentage: 28, color: "bg-primary-500" },
               { range: "650-699", percentage: 22, color: "bg-yellow-500" },
               { range: "600-649", percentage: 10, color: "bg-orange-500" },
               { range: "Below 600", percentage: 5, color: "bg-red-500" },

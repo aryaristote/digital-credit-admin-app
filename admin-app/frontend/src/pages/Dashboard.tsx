@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
-import { Users, CreditCard, TrendingUp, AlertCircle, BarChart3, PieChart } from "lucide-react";
+import {
+  Users,
+  CreditCard,
+  TrendingUp,
+  AlertCircle,
+  BarChart3,
+  PieChart,
+} from "lucide-react";
 import Card from "../components/ui/Card";
 import api from "../lib/api";
 import { formatCurrency } from "../lib/utils";
@@ -63,7 +70,7 @@ export default function Dashboard() {
       title: "Total Users",
       value: stats.totalUsers,
       icon: Users,
-      color: "bg-blue-500",
+      color: "bg-primary-500",
       change: `+${stats.recentUsers} this month`,
     },
     {
@@ -142,7 +149,9 @@ export default function Dashboard() {
 
 // Monthly Loan Disbursement Card Component
 function MonthlyDisbursementCard() {
-  const [data, setData] = useState<Array<{ month: string; amount: number }>>([]);
+  const [data, setData] = useState<Array<{ month: string; amount: number }>>(
+    []
+  );
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -179,7 +188,9 @@ function MonthlyDisbursementCard() {
             <div key={index}>
               <div className="flex justify-between text-sm mb-1">
                 <span className="text-gray-600">{item.month}</span>
-                <span className="font-medium">{formatCurrency(item.amount)}</span>
+                <span className="font-medium">
+                  {formatCurrency(item.amount)}
+                </span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div
@@ -205,7 +216,10 @@ function CreditDistributionCard() {
       try {
         const response = await api.get("/analytics/credit-distribution");
         const distribution = response.data || [];
-        const total = distribution.reduce((sum: number, item: any) => sum + item.count, 0);
+        const total = distribution.reduce(
+          (sum: number, item: any) => sum + item.count,
+          0
+        );
         const withPercentage = distribution.map((item: any) => ({
           ...item,
           percentage: total > 0 ? (item.count / total) * 100 : 0,
@@ -290,11 +304,17 @@ function PerformanceSummaryCard() {
       ) : (
         <div className="space-y-4">
           <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">Credits Approved (This Month)</span>
-            <span className="font-semibold text-gray-900">{data.creditsApprovedThisMonth}</span>
+            <span className="text-sm text-gray-600">
+              Credits Approved (This Month)
+            </span>
+            <span className="font-semibold text-gray-900">
+              {data.creditsApprovedThisMonth}
+            </span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">Amount Disbursed (This Month)</span>
+            <span className="text-sm text-gray-600">
+              Amount Disbursed (This Month)
+            </span>
             <span className="font-semibold text-gray-900">
               {formatCurrency(data.amountDisbursedThisMonth)}
             </span>
@@ -313,11 +333,15 @@ function PerformanceSummaryCard() {
           </div>
           <div className="flex justify-between items-center pt-2 border-t border-gray-200">
             <span className="text-sm text-gray-600">Active Loans</span>
-            <span className="font-semibold text-blue-600">{data.totalActiveLoans}</span>
+            <span className="font-semibold text-primary-600">
+              {data.totalActiveLoans}
+            </span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-sm text-gray-600">Completed Loans</span>
-            <span className="font-semibold text-green-600">{data.totalCompletedLoans}</span>
+            <span className="font-semibold text-green-600">
+              {data.totalCompletedLoans}
+            </span>
           </div>
         </div>
       )}
@@ -358,15 +382,17 @@ function RecentActivityCard() {
           {activities.map((activity, index) => (
             <div key={index} className="flex items-start justify-between">
               <div className="flex-1">
-                <p className="text-sm font-medium text-gray-900">{activity.user}</p>
+                <p className="text-sm font-medium text-gray-900">
+                  {activity.user}
+                </p>
                 <p className="text-xs text-gray-500">{activity.action}</p>
               </div>
               <span
                 className={`text-xs px-2 py-1 rounded ${
                   activity.status === "pending"
                     ? "bg-yellow-100 text-yellow-800"
-                    : activity.status === "active"
-                    ? "bg-blue-100 text-blue-800"
+                    :                   activity.status === "active"
+                    ? "bg-primary-100 text-primary-800"
                     : activity.status === "completed"
                     ? "bg-green-100 text-green-800"
                     : "bg-gray-100 text-gray-800"

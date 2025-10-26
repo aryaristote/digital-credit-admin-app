@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SavingsAccount = void 0;
 const typeorm_1 = require("typeorm");
 const user_entity_1 = require("./user.entity");
+const transaction_entity_1 = require("./transaction.entity");
 let SavingsAccount = class SavingsAccount {
 };
 exports.SavingsAccount = SavingsAccount;
@@ -52,6 +53,10 @@ __decorate([
     (0, typeorm_1.JoinColumn)({ name: 'userId' }),
     __metadata("design:type", user_entity_1.User)
 ], SavingsAccount.prototype, "user", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => transaction_entity_1.Transaction, (transaction) => transaction.savingsAccount),
+    __metadata("design:type", Array)
+], SavingsAccount.prototype, "transactions", void 0);
 exports.SavingsAccount = SavingsAccount = __decorate([
     (0, typeorm_1.Entity)('savings_accounts')
 ], SavingsAccount);

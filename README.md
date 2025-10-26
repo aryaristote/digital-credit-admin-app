@@ -44,7 +44,27 @@ This project demonstrates a full-stack financial management system with:
    - System analytics and metrics
    - Ports: Backend (3002), Frontend (3100)
 
+## 🚀 CI/CD Pipeline
+
+The project includes comprehensive CI/CD workflows using GitHub Actions:
+
+- **Automated Testing**: All applications tested on push/PR
+- **Code Quality**: Linting, formatting, and coverage checks
+- **Security Audits**: Dependency vulnerability scanning
+- **Automated Deployment**: Deploy to staging/production
+
+See [CI_CD_SETUP.md](CI_CD_SETUP.md) for complete guide.
+
+---
+
 ## 🏗️ Architecture
+
+Comprehensive architecture documentation available:
+
+- 📐 [Architecture Guide](ARCHITECTURE.md) - Complete architecture overview
+- 🎯 [Architecture Improvements](ARCHITECTURE_IMPROVEMENTS.md) - Recommended enhancements
+- 🏛️ [Client Backend Architecture](client-app/backend/ARCHITECTURE.md) - Client app architecture
+- 🏛️ [Admin Backend Architecture](admin-app/backend/ARCHITECTURE.md) - Admin app architecture
 
 ### High-Level Architecture
 
@@ -352,13 +372,47 @@ digital-credit-savings-platform/
 └── LICENSE
 ```
 
-## 📚 API Documentation
+## 📚 Documentation
 
-### Client API
+### Complete Documentation Index
 
-Complete documentation available at: `http://localhost:3001/api/v1/docs`
+#### Client Application
 
-**Key Endpoints:**
+**Backend:**
+
+- 📘 [API Documentation](client-app/backend/API_DOCUMENTATION.md) - Complete API reference with examples
+- 🚀 [Setup Guide](client-app/backend/SETUP_GUIDE.md) - Detailed backend setup instructions
+- 📖 [Backend README](client-app/backend/README.md) - Backend overview and features
+
+**Frontend:**
+
+- 🚀 [Setup Guide](client-app/frontend/SETUP_GUIDE.md) - Frontend setup and configuration
+- 📖 [Frontend README](client-app/frontend/README.md) - Frontend overview and features
+
+#### Admin Application
+
+**Backend:**
+
+- 📘 [API Documentation](admin-app/backend/API_DOCUMENTATION.md) - Complete API reference with examples
+- 🚀 [Setup Guide](admin-app/backend/ADMIN_SETUP_GUIDE.md) - Detailed admin backend setup
+- 👤 [Create Admin Guide](admin-app/backend/CREATE_ADMIN_GUIDE.md) - Admin user creation guide
+- 📖 [Backend README](admin-app/backend/README.md) - Backend overview and features
+
+**Frontend:**
+
+- 🚀 [Setup Guide](admin-app/frontend/SETUP_GUIDE.md) - Frontend setup and configuration
+- 📖 [Frontend README](admin-app/frontend/README.md) - Frontend overview and features
+
+### Interactive API Documentation
+
+Both applications provide Swagger UI for interactive API exploration:
+
+- **Client API Swagger**: `http://localhost:3001/api/v1/docs`
+- **Admin API Swagger**: `http://localhost:3002/api/v1/docs`
+
+### Quick API Reference
+
+#### Client API Key Endpoints
 
 - `POST /api/v1/auth/register` - Register new user
 - `POST /api/v1/auth/login` - User login
@@ -367,11 +421,7 @@ Complete documentation available at: `http://localhost:3001/api/v1/docs`
 - `POST /api/v1/credit/request` - Request credit
 - `GET /api/v1/notifications` - Get notifications
 
-### Admin API
-
-Complete documentation available at: `http://localhost:3002/api/v1/docs`
-
-**Key Endpoints:**
+#### Admin API Key Endpoints
 
 - `POST /api/v1/auth/login` - Admin login
 - `GET /api/v1/users` - List all users
@@ -380,6 +430,8 @@ Complete documentation available at: `http://localhost:3002/api/v1/docs`
 - `GET /api/v1/analytics/dashboard` - Dashboard statistics
 
 ## 🔒 Security
+
+Comprehensive security measures protect user data, financial transactions, and system integrity. See [SECURITY.md](SECURITY.md) for detailed documentation.
 
 ### Authentication
 
@@ -409,7 +461,15 @@ Complete documentation available at: `http://localhost:3002/api/v1/docs`
 - HTTPS in production
 - Regular dependency updates
 
-## 🧪 Testing
+**Security Documentation:**
+
+- 📘 [Main Security Guide](SECURITY.md) - Comprehensive security overview
+- 🔐 [Client Backend Security](client-app/backend/SECURITY.md) - Client app security details
+- 🔐 [Admin Backend Security](admin-app/backend/SECURITY.md) - Admin app security details
+
+## 🧪 Testing & Code Quality
+
+Comprehensive testing and code quality standards ensure maintainable, reliable code.
 
 ### Backend Tests
 
@@ -418,25 +478,47 @@ Complete documentation available at: `http://localhost:3002/api/v1/docs`
 cd client-app/backend
 npm run test            # Unit tests
 npm run test:e2e        # E2E tests
-npm run test:cov        # Coverage
+npm run test:cov        # Coverage report
 
 # Admin backend
 cd admin-app/backend
 npm run test
+npm run test:cov
 ```
 
-### Frontend Tests
+### Frontend Quality Checks
 
 ```bash
 # Client frontend
 cd client-app/frontend
+npm run lint            # ESLint
+npm run type-check      # TypeScript validation
+
+# Admin frontend
+cd admin-app/frontend
 npm run lint
 npm run type-check
 ```
 
+### Code Quality Tools
+
+- **ESLint**: Code linting with TypeScript rules
+- **Prettier**: Code formatting
+- **Jest**: Unit and integration testing
+- **TypeScript**: Type safety and compilation
+
 ### Test Coverage Goals
 
-- Unit tests for services: >80%
+- **Statements**: 80%+
+- **Branches**: 75%+
+- **Functions**: 80%+
+- **Lines**: 80%+
+
+### Quality Documentation
+
+- 📘 [Code Quality Guide](CODE_QUALITY.md) - Comprehensive quality standards
+- 🧪 [Testing Guide](TESTING_GUIDE.md) - Testing best practices
+- ✅ [Code Quality Checklist](CODE_QUALITY_CHECKLIST.md) - Quick reference
 - Integration tests for critical flows
 - E2E tests for user journeys
 

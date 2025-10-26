@@ -5,6 +5,7 @@ import { UserRole } from '../../common/enums/user-role.enum';
 export declare class UsersService {
     private userRepository;
     private savingsRepository;
+    private readonly logger;
     constructor(userRepository: Repository<User>, savingsRepository: Repository<SavingsAccount>);
     getAllUsers(page?: number, limit?: number): Promise<{
         data: {
@@ -39,8 +40,15 @@ export declare class UsersService {
     }>;
     toggleUserStatus(userId: string): Promise<{
         message: string;
+        user: {
+            id: string;
+            email: string;
+            isActive: boolean;
+        };
     }>;
     updateCreditScore(userId: string, creditScore: number): Promise<{
         message: string;
+        userId: string;
+        creditScore: number;
     }>;
 }

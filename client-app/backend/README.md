@@ -37,7 +37,9 @@ A scalable, production-ready backend API for the customer-facing Digital Credit 
 
 ## 🏗️ Architecture
 
-The application follows a clean, modular architecture:
+The application follows a clean, modular architecture. See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed documentation.
+
+**Architecture Overview:**
 
 ```
 backend/
@@ -61,6 +63,7 @@ backend/
 ```
 
 Each module follows the pattern:
+
 - **Entity**: Database model
 - **DTO**: Data Transfer Objects for API requests/responses
 - **Repository**: Data access layer
@@ -224,25 +227,100 @@ http://localhost:3001/api/v1/docs
 - `PUT /api/v1/notifications/read-all` - Mark all as read
 - `DELETE /api/v1/notifications/:id` - Delete notification
 
-## 🧪 Testing
+## 🗄️ Database Migrations & Seeds
 
-Run unit tests:
+### Running Migrations
 
 ```bash
+# Run pending migrations
+npm run migration:run
+
+# Revert last migration
+npm run migration:revert
+
+# Generate migration from entity changes
+npm run migration:generate -- MigrationName
+
+# Show migration status
+npm run migration:show
+```
+
+### Seeding Database
+
+```bash
+# Seed all test data
+npm run seed
+
+# Seed specific data
+npm run seed:users
+```
+
+**Seed Data Includes:**
+
+- Test users (john.doe@example.com, jane.smith@example.com)
+- Savings accounts with initial balances
+- Sample credit requests (pending, active, completed)
+- Sample repayments
+
+See [DATABASE_MIGRATIONS.md](../../DATABASE_MIGRATIONS.md) for complete guide.
+
+## 🧪 Testing & Code Quality
+
+### Running Tests
+
+```bash
+# Unit tests
 npm run test
-```
 
-Run tests with coverage:
+# Watch mode
+npm run test:watch
 
-```bash
+# Coverage report
 npm run test:cov
-```
 
-Run e2e tests:
-
-```bash
+# E2E tests
 npm run test:e2e
 ```
+
+### Code Quality
+
+```bash
+# Linting
+npm run lint              # Lint and auto-fix
+npm run lint:check        # Lint without fixing
+
+# Formatting
+npm run format            # Format all files
+
+# Type checking
+tsc --noEmit              # Check types without building
+```
+
+### Coverage Goals
+
+- **Statements**: 80%+
+- **Branches**: 75%+
+- **Functions**: 80%+
+- **Lines**: 80%+
+
+### Test Structure
+
+```
+src/
+├── modules/
+│   └── feature/
+│       ├── feature.service.ts
+│       └── feature.service.spec.ts    # Unit tests
+test/
+├── integration/                       # Integration tests
+└── e2e/                              # E2E tests
+```
+
+### Documentation
+
+- 📘 [Code Quality Guide](../../CODE_QUALITY.md)
+- 🧪 [Testing Guide](../../TESTING_GUIDE.md)
+- ✅ [Code Quality Checklist](../../CODE_QUALITY_CHECKLIST.md)
 
 ## 🔒 Security Features
 
@@ -283,6 +361,7 @@ CMD ["npm", "run", "start:prod"]
 ### Environment Variables
 
 Ensure all production environment variables are properly configured:
+
 - Use strong JWT secrets
 - Configure production database credentials
 - Set up production SMTP server
@@ -308,7 +387,12 @@ Ensure all production environment variables are properly configured:
 
 MIT License - see LICENSE file for details
 
+## 📚 Documentation
+
+- **Setup Guide**: See `SETUP_GUIDE.md` for detailed setup instructions
+- **API Documentation**: See `API_DOCUMENTATION.md` for complete API reference
+- **Swagger UI**: Visit `http://localhost:3001/api/v1/docs` for interactive API docs
+
 ## 👥 Support
 
 For issues and questions, please create an issue in the repository.
-

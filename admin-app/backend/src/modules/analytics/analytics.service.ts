@@ -128,7 +128,7 @@ export class AnalyticsService {
 
   async getMonthlyLoanDisbursement() {
     console.log("📊 [ANALYTICS] Fetching monthly loan disbursement data...");
-    
+
     // Get last 6 months of data
     const months = [];
     for (let i = 5; i >= 0; i--) {

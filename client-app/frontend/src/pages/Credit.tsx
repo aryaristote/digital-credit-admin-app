@@ -389,8 +389,9 @@ export default function Credit() {
                   {request.status === "completed" && (
                     <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
                       <p className="text-sm text-green-800">
-                        <strong>✅ Credit Completed:</strong> This credit has been fully repaid. 
-                        You can delete it from your records if you no longer need to reference it.
+                        <strong>✅ Credit Completed:</strong> This credit has
+                        been fully repaid. You can delete it from your records
+                        if you no longer need to reference it.
                       </p>
                     </div>
                   )}

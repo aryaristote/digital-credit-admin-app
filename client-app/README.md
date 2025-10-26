@@ -212,6 +212,12 @@ See backend Swagger documentation at `/api/v1/docs` for complete API reference.
 - `POST /api/v1/credit/request` - Request credit
 - `GET /api/v1/notifications` - Get notifications
 
+**Full Documentation**:
+
+- **Backend API Docs**: See `backend/API_DOCUMENTATION.md`
+- **Backend Setup**: See `backend/SETUP_GUIDE.md`
+- **Frontend Setup**: See `frontend/SETUP_GUIDE.md`
+
 ## 🤝 Contributing
 
 1. Fork the repository

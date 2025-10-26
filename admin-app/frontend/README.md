@@ -55,7 +55,7 @@ The app will be available at `http://localhost:5174`
 
 ## Project Structure
 
-```
+````
 src/
 ├── components/
 │   ├── layout/
@@ -107,40 +107,46 @@ server: {
     },
   },
 }
-```
+````
 
 ## Key Features
 
 ### 1. Authentication
+
 - Secure admin login with JWT
 - Token refresh mechanism
 - Protected routes
 - Persistent session storage
 
 ### 2. Dashboard
+
 - Real-time statistics
 - System status monitoring
 - Quick access to key metrics
 
 ### 3. User Management
+
 - View all registered users
 - Search and filter users
 - Activate/deactivate users
 - View credit scores
 
 ### 4. Credit Approvals
+
 - Review pending credit requests
 - Approve or reject requests
 - View customer credit scores
 - Filter by status
 
 ### 5. Transaction Monitoring
+
 - View all system transactions
 - Filter by transaction type
 - Export capabilities
 - Detailed transaction information
 
 ### 6. Analytics
+
 - Performance metrics
 - Credit distribution charts
 - Monthly disbursement tracking
@@ -166,13 +172,13 @@ server: {
 All API calls should use the configured axios instance from `src/lib/api.ts`:
 
 ```typescript
-import api from '../lib/api';
+import api from "../lib/api";
 
 // GET request
-const response = await api.get('/endpoint');
+const response = await api.get("/endpoint");
 
 // POST request
-const response = await api.post('/endpoint', data);
+const response = await api.post("/endpoint", data);
 ```
 
 ## Building for Production
@@ -199,7 +205,12 @@ EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
+## 📚 Documentation
+
+- **Setup Guide**: See `SETUP_GUIDE.md` for detailed setup instructions
+- **Backend API**: See `../backend/API_DOCUMENTATION.md`
+- **Backend Setup**: See `../backend/ADMIN_SETUP_GUIDE.md`
+
 ## License
 
 Part of the Digital Credit & Savings Platform
-

@@ -1,4 +1,4 @@
-import { AnalyticsService } from './analytics.service';
+import { AnalyticsService } from "./analytics.service";
 export declare class AnalyticsController {
     private readonly analyticsService;
     constructor(analyticsService: AnalyticsService);
@@ -31,4 +31,18 @@ export declare class AnalyticsController {
         status: import("../../shared/entities/credit-request.entity").CreditStatus;
         createdAt: Date;
     }[]>;
+    getMonthlyLoanDisbursement(): Promise<any[]>;
+    getCreditDistributionByScore(): Promise<{
+        range: string;
+        count: number;
+        percentage: number;
+    }[]>;
+    getPerformanceSummary(): Promise<{
+        creditsApprovedThisMonth: number;
+        amountDisbursedThisMonth: number;
+        averageCreditScore: number;
+        repaymentRate: number;
+        totalActiveLoans: number;
+        totalCompletedLoans: number;
+    }>;
 }

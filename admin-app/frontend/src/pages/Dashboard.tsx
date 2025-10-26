@@ -391,7 +391,7 @@ function RecentActivityCard() {
                 className={`text-xs px-2 py-1 rounded ${
                   activity.status === "pending"
                     ? "bg-yellow-100 text-yellow-800"
-                    :                   activity.status === "active"
+                    : activity.status === "active"
                     ? "bg-primary-100 text-primary-800"
                     : activity.status === "completed"
                     ? "bg-green-100 text-green-800"

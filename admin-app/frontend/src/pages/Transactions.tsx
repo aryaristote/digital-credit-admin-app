@@ -24,7 +24,9 @@ interface Transaction {
 export default function Transactions() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<"all" | "deposit" | "withdrawal" | "credit_payment">("all");
+  const [filter, setFilter] = useState<
+    "all" | "deposit" | "withdrawal" | "credit_payment"
+  >("all");
 
   useEffect(() => {
     fetchTransactions();
@@ -37,13 +39,19 @@ export default function Transactions() {
       console.log("✅ [TRANSACTIONS] Response received:", response.data);
       // Backend returns paginated response: { data: [...], total, page, totalPages }
       const transactionsData = response.data.data || response.data || [];
-      console.log("💰 [TRANSACTIONS] Transactions:", transactionsData.length, "transactions");
+      console.log(
+        "💰 [TRANSACTIONS] Transactions:",
+        transactionsData.length,
+        "transactions"
+      );
       setTransactions(transactionsData);
     } catch (error: any) {
       console.error("❌ [TRANSACTIONS] Failed to fetch transactions:", error);
       console.error("❌ [TRANSACTIONS] Error response:", error.response?.data);
       console.error("❌ [TRANSACTIONS] Error status:", error.response?.status);
-      toast.error(error.response?.data?.message || "Failed to fetch transactions");
+      toast.error(
+        error.response?.data?.message || "Failed to fetch transactions"
+      );
     } finally {
       setLoading(false);
     }
@@ -138,14 +146,16 @@ export default function Transactions() {
             onClick={() => setFilter("withdrawal")}
             size="sm"
           >
-            Withdrawals ({transactions.filter((t) => t.type === "withdrawal").length})
+            Withdrawals (
+            {transactions.filter((t) => t.type === "withdrawal").length})
           </Button>
           <Button
             variant={filter === "credit_payment" ? "primary" : "outline"}
             onClick={() => setFilter("credit_payment")}
             size="sm"
           >
-            Credit Payments ({transactions.filter((t) => t.type === "credit_payment").length})
+            Credit Payments (
+            {transactions.filter((t) => t.type === "credit_payment").length})
           </Button>
         </div>
       </Card>
@@ -225,4 +235,3 @@ export default function Transactions() {
     </div>
   );
 }
-

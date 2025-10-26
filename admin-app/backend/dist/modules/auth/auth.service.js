@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var AuthService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
@@ -20,42 +21,39 @@ const typeorm_2 = require("typeorm");
 const bcrypt = require("bcrypt");
 const user_entity_1 = require("../../shared/entities/user.entity");
 const user_role_enum_1 = require("../../common/enums/user-role.enum");
-let AuthService = class AuthService {
+let AuthService = AuthService_1 = class AuthService {
     constructor(userRepository, jwtService) {
         this.userRepository = userRepository;
         this.jwtService = jwtService;
+        this.logger = new common_1.Logger(AuthService_1.name);
     }
     async login(email, password) {
-        console.log("🔐 [AUTH SERVICE] Login attempt for:", email);
+        this.logger.log(`Login attempt for: ${email}`);
         try {
             const user = await this.userRepository.findOne({ where: { email } });
-            console.log("👤 [AUTH SERVICE] User found:", user ? "Yes" : "No");
             if (!user) {
-                console.log("❌ [AUTH SERVICE] User not found");
-                throw new common_1.UnauthorizedException("Invalid credentials or not an admin");
+                this.logger.warn(`Login failed: User not found - ${email}`);
+                throw new common_1.UnauthorizedException('Invalid credentials or not an admin');
             }
-            console.log("🔍 [AUTH SERVICE] User role:", user.role);
             if (user.role !== user_role_enum_1.UserRole.ADMIN) {
-                console.log("❌ [AUTH SERVICE] User is not an admin");
-                throw new common_1.UnauthorizedException("Invalid credentials or not an admin");
+                this.logger.warn(`Login failed: User is not an admin - ${email}`);
+                throw new common_1.UnauthorizedException('Invalid credentials or not an admin');
             }
             const isPasswordValid = await bcrypt.compare(password, user.password);
-            console.log("🔑 [AUTH SERVICE] Password valid:", isPasswordValid);
             if (!isPasswordValid) {
-                console.log("❌ [AUTH SERVICE] Invalid password");
-                throw new common_1.UnauthorizedException("Invalid credentials");
+                this.logger.warn(`Login failed: Invalid password - ${email}`);
+                throw new common_1.UnauthorizedException('Invalid credentials');
             }
-            console.log("✅ [AUTH SERVICE] User active:", user.isActive);
             if (!user.isActive) {
-                console.log("❌ [AUTH SERVICE] Account is deactivated");
-                throw new common_1.UnauthorizedException("Account is deactivated");
+                this.logger.warn(`Login failed: Account deactivated - ${email}`);
+                throw new common_1.UnauthorizedException('Account is deactivated');
             }
             const accessToken = this.jwtService.sign({
                 sub: user.id,
                 email: user.email,
                 role: user.role,
             });
-            console.log("🎉 [AUTH SERVICE] Login successful for:", email);
+            this.logger.log(`Login successful for: ${email}`);
             return {
                 accessToken,
                 user: {
@@ -68,20 +66,23 @@ let AuthService = class AuthService {
             };
         }
         catch (error) {
-            console.error("💥 [AUTH SERVICE] Login error:", error.message);
-            throw error;
+            if (error instanceof common_1.UnauthorizedException) {
+                throw error;
+            }
+            this.logger.error(`Login error: ${error.message}`, error.stack);
+            throw new common_1.UnauthorizedException('Authentication failed');
         }
     }
     async validateUser(userId) {
         const user = await this.userRepository.findOne({ where: { id: userId } });
         if (!user || user.role !== user_role_enum_1.UserRole.ADMIN || !user.isActive) {
-            throw new common_1.UnauthorizedException("Invalid user or not an admin");
+            throw new common_1.UnauthorizedException('Invalid user or not an admin');
         }
         return user;
     }
 };
 exports.AuthService = AuthService;
-exports.AuthService = AuthService = __decorate([
+exports.AuthService = AuthService = AuthService_1 = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
     __metadata("design:paramtypes", [typeorm_2.Repository,

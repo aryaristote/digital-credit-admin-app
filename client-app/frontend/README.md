@@ -224,6 +224,12 @@ VITE_API_URL=http://localhost:3001/api/v1
 3. Run linting and type checking
 4. Submit a pull request
 
+## 📚 Documentation
+
+- **Setup Guide**: See `SETUP_GUIDE.md` for detailed setup instructions
+- **Backend API**: See `../backend/API_DOCUMENTATION.md`
+- **Backend Setup**: See `../backend/SETUP_GUIDE.md`
+
 ## 📄 License
 
 MIT License - see LICENSE file for details

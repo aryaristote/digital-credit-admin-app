@@ -31,35 +31,65 @@ let AnalyticsController = class AnalyticsController {
     async getRecentActivity(limit = 10) {
         return await this.analyticsService.getRecentActivity(limit);
     }
+    async getMonthlyLoanDisbursement() {
+        return await this.analyticsService.getMonthlyLoanDisbursement();
+    }
+    async getCreditDistributionByScore() {
+        return await this.analyticsService.getCreditDistributionByScore();
+    }
+    async getPerformanceSummary() {
+        return await this.analyticsService.getPerformanceSummary();
+    }
 };
 exports.AnalyticsController = AnalyticsController;
 __decorate([
-    (0, common_1.Get)('dashboard'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get dashboard statistics' }),
+    (0, common_1.Get)("dashboard"),
+    (0, swagger_1.ApiOperation)({ summary: "Get dashboard statistics" }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], AnalyticsController.prototype, "getDashboardStats", null);
 __decorate([
-    (0, common_1.Get)('credit-score-distribution'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get credit score distribution' }),
+    (0, common_1.Get)("credit-score-distribution"),
+    (0, swagger_1.ApiOperation)({ summary: "Get credit score distribution" }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], AnalyticsController.prototype, "getCreditScoreDistribution", null);
 __decorate([
-    (0, common_1.Get)('recent-activity'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get recent activity' }),
-    __param(0, (0, common_1.Query)('limit')),
+    (0, common_1.Get)("recent-activity"),
+    (0, swagger_1.ApiOperation)({ summary: "Get recent activity" }),
+    __param(0, (0, common_1.Query)("limit")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], AnalyticsController.prototype, "getRecentActivity", null);
+__decorate([
+    (0, common_1.Get)("monthly-disbursement"),
+    (0, swagger_1.ApiOperation)({ summary: "Get monthly loan disbursement data" }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AnalyticsController.prototype, "getMonthlyLoanDisbursement", null);
+__decorate([
+    (0, common_1.Get)("credit-distribution"),
+    (0, swagger_1.ApiOperation)({ summary: "Get credit distribution by score" }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AnalyticsController.prototype, "getCreditDistributionByScore", null);
+__decorate([
+    (0, common_1.Get)("performance-summary"),
+    (0, swagger_1.ApiOperation)({ summary: "Get performance summary metrics" }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AnalyticsController.prototype, "getPerformanceSummary", null);
 exports.AnalyticsController = AnalyticsController = __decorate([
-    (0, swagger_1.ApiTags)('Analytics'),
-    (0, common_1.Controller)('analytics'),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt'), admin_guard_1.AdminGuard),
-    (0, swagger_1.ApiBearerAuth)('JWT-auth'),
+    (0, swagger_1.ApiTags)("Analytics"),
+    (0, common_1.Controller)("analytics"),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)("jwt"), admin_guard_1.AdminGuard),
+    (0, swagger_1.ApiBearerAuth)("JWT-auth"),
     __metadata("design:paramtypes", [analytics_service_1.AnalyticsService])
 ], AnalyticsController);
 //# sourceMappingURL=analytics.controller.js.map

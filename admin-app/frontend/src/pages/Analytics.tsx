@@ -53,7 +53,9 @@ export default function Analytics() {
   return (
     <div>
       <div className="mb-6">
-        <h2 className="text-3xl font-bold text-gray-900">Analytics & Reports</h2>
+        <h2 className="text-3xl font-bold text-gray-900">
+          Analytics & Reports
+        </h2>
         <p className="text-gray-600 mt-1">
           Detailed insights and performance metrics
         </p>
@@ -163,4 +165,3 @@ export default function Analytics() {
     </div>
   );
 }
-

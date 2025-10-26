@@ -27,9 +27,9 @@ let CreditController = class CreditController {
         return await this.creditService.getPendingRequests(page, limit);
     }
     async getAllRequests(page = 1, limit = 10, status) {
-        console.log("📥 [CREDIT CONTROLLER] Fetching credit requests - status:", status || "all");
+        console.log('📥 [CREDIT CONTROLLER] Fetching credit requests - status:', status || 'all');
         const result = await this.creditService.getAllRequests(page, limit, status);
-        console.log("✅ [CREDIT CONTROLLER] Found", result.total, "credit requests");
+        console.log('✅ [CREDIT CONTROLLER] Found', result.total, 'credit requests');
         return result;
     }
     async getStats() {
@@ -41,59 +41,112 @@ let CreditController = class CreditController {
     async rejectRequest(requestId, adminId, reason) {
         return await this.creditService.rejectRequest(requestId, adminId, reason);
     }
+    async bulkApprove(adminId, body) {
+        return await this.creditService.bulkApproveRequests(body.requestIds, adminId, body.approvedAmounts);
+    }
+    async bulkReject(adminId, body) {
+        return await this.creditService.bulkRejectRequests(body.requestIds, adminId, body.reason);
+    }
+    async searchCredits(status, minAmount, maxAmount, minCreditScore, maxCreditScore, dateFrom, dateTo, page = 1, limit = 10) {
+        return await this.creditService.searchCredits({
+            status,
+            minAmount,
+            maxAmount,
+            minCreditScore,
+            maxCreditScore,
+            dateFrom: dateFrom ? new Date(dateFrom) : undefined,
+            dateTo: dateTo ? new Date(dateTo) : undefined,
+            page,
+            limit,
+        });
+    }
 };
 exports.CreditController = CreditController;
 __decorate([
-    (0, common_1.Get)("pending"),
-    (0, swagger_1.ApiOperation)({ summary: "Get pending credit requests" }),
-    __param(0, (0, common_1.Query)("page")),
-    __param(1, (0, common_1.Query)("limit")),
+    (0, common_1.Get)('pending'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get pending credit requests' }),
+    __param(0, (0, common_1.Query)('page')),
+    __param(1, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Number]),
     __metadata("design:returntype", Promise)
 ], CreditController.prototype, "getPendingRequests", null);
 __decorate([
-    (0, common_1.Get)("all"),
-    (0, swagger_1.ApiOperation)({ summary: "Get all credit requests" }),
-    __param(0, (0, common_1.Query)("page")),
-    __param(1, (0, common_1.Query)("limit")),
-    __param(2, (0, common_1.Query)("status")),
+    (0, common_1.Get)('all'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get all credit requests' }),
+    __param(0, (0, common_1.Query)('page')),
+    __param(1, (0, common_1.Query)('limit')),
+    __param(2, (0, common_1.Query)('status')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Number, String]),
     __metadata("design:returntype", Promise)
 ], CreditController.prototype, "getAllRequests", null);
 __decorate([
-    (0, common_1.Get)("stats"),
-    (0, swagger_1.ApiOperation)({ summary: "Get credit statistics" }),
+    (0, common_1.Get)('stats'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get credit statistics' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], CreditController.prototype, "getStats", null);
 __decorate([
-    (0, common_1.Put)(":id/approve"),
-    (0, swagger_1.ApiOperation)({ summary: "Approve credit request" }),
-    __param(0, (0, common_1.Param)("id")),
-    __param(1, (0, current_user_decorator_1.CurrentUser)("id")),
-    __param(2, (0, common_1.Body)("approvedAmount")),
+    (0, common_1.Put)(':id/approve'),
+    (0, swagger_1.ApiOperation)({ summary: 'Approve credit request' }),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, current_user_decorator_1.CurrentUser)('id')),
+    __param(2, (0, common_1.Body)('approvedAmount')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String, Number]),
     __metadata("design:returntype", Promise)
 ], CreditController.prototype, "approveRequest", null);
 __decorate([
-    (0, common_1.Put)(":id/reject"),
-    (0, swagger_1.ApiOperation)({ summary: "Reject credit request" }),
-    __param(0, (0, common_1.Param)("id")),
-    __param(1, (0, current_user_decorator_1.CurrentUser)("id")),
-    __param(2, (0, common_1.Body)("reason")),
+    (0, common_1.Put)(':id/reject'),
+    (0, swagger_1.ApiOperation)({ summary: 'Reject credit request' }),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, current_user_decorator_1.CurrentUser)('id')),
+    __param(2, (0, common_1.Body)('reason')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", Promise)
 ], CreditController.prototype, "rejectRequest", null);
+__decorate([
+    (0, common_1.Put)('bulk/approve'),
+    (0, swagger_1.ApiOperation)({ summary: 'Bulk approve credit requests' }),
+    __param(0, (0, current_user_decorator_1.CurrentUser)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], CreditController.prototype, "bulkApprove", null);
+__decorate([
+    (0, common_1.Put)('bulk/reject'),
+    (0, swagger_1.ApiOperation)({ summary: 'Bulk reject credit requests' }),
+    __param(0, (0, current_user_decorator_1.CurrentUser)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], CreditController.prototype, "bulkReject", null);
+__decorate([
+    (0, common_1.Get)('search'),
+    (0, swagger_1.ApiOperation)({ summary: 'Advanced search for credit requests' }),
+    __param(0, (0, common_1.Query)('status')),
+    __param(1, (0, common_1.Query)('minAmount')),
+    __param(2, (0, common_1.Query)('maxAmount')),
+    __param(3, (0, common_1.Query)('minCreditScore')),
+    __param(4, (0, common_1.Query)('maxCreditScore')),
+    __param(5, (0, common_1.Query)('dateFrom')),
+    __param(6, (0, common_1.Query)('dateTo')),
+    __param(7, (0, common_1.Query)('page')),
+    __param(8, (0, common_1.Query)('limit')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Number, Number, Number, Number, String, String, Number, Number]),
+    __metadata("design:returntype", Promise)
+], CreditController.prototype, "searchCredits", null);
 exports.CreditController = CreditController = __decorate([
-    (0, swagger_1.ApiTags)("Credit Management"),
-    (0, common_1.Controller)("credit"),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)("jwt"), admin_guard_1.AdminGuard),
-    (0, swagger_1.ApiBearerAuth)("JWT-auth"),
+    (0, swagger_1.ApiTags)('Credit Management'),
+    (0, common_1.Controller)('credit'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt'), admin_guard_1.AdminGuard),
+    (0, swagger_1.ApiBearerAuth)('JWT-auth'),
     __metadata("design:paramtypes", [credit_service_1.CreditService])
 ], CreditController);
 //# sourceMappingURL=credit.controller.js.map

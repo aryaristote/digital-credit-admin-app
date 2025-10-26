@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package credit;
+
+service CreditService {
+  rpc GetCreditDetails (GetCreditRequest) returns (CreditResponse);
+  rpc GetUserCredits (GetUserCreditsRequest) returns (UserCreditsResponse);
+  rpc CreateCreditRequest (CreateCreditRequestRequest) returns (CreditResponse);
+  rpc RepayCredit (RepayCreditRequest) returns (RepayCreditResponse);
+}
+
+message GetCreditRequest {
+  string credit_request_id = 1;
+  string user_id = 2;
+}
+
+message GetUserCreditsRequest {
+  string user_id = 1;
+}
+
+message CreateCreditRequestRequest {
+  string user_id = 1;
+  double requested_amount = 2;
+  int32 term_months = 3;
+  string purpose = 4;
+}
+
+message RepayCreditRequest {
+  string user_id = 1;
+  string credit_request_id = 2;
+  double amount = 3;
+}
+
+message CreditResponse {
+  string id = 1;
+  string user_id = 2;
+  double requested_amount = 3;
+  double approved_amount = 4;
+  double total_repaid = 5;
+  double interest_rate = 6;
+  int32 term_months = 7;
+  string status = 8;
+  string purpose = 9;
+  string created_at = 10;
+}
+
+message UserCreditsResponse {
+  repeated CreditResponse credits = 1;
+}
+
+message RepayCreditResponse {
+  bool success = 1;
+  string message = 2;
+  double remaining_balance = 3;
+}
+

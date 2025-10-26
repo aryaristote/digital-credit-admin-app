@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package savings;
+
+service SavingsService {
+  rpc GetAccount (GetAccountRequest) returns (AccountResponse);
+  rpc GetTransactions (GetTransactionsRequest) returns (TransactionsResponse);
+  rpc Deposit (DepositRequest) returns (TransactionResponse);
+  rpc Withdraw (WithdrawRequest) returns (TransactionResponse);
+}
+
+message GetAccountRequest {
+  string user_id = 1;
+}
+
+message GetTransactionsRequest {
+  string user_id = 1;
+  int32 limit = 2;
+}
+
+message DepositRequest {
+  string user_id = 1;
+  double amount = 2;
+  string description = 3;
+}
+
+message WithdrawRequest {
+  string user_id = 1;
+  double amount = 2;
+  string description = 3;
+}
+
+message AccountResponse {
+  string id = 1;
+  string user_id = 2;
+  string account_number = 3;
+  double balance = 4;
+  double interest_rate = 5;
+  string status = 6;
+}
+
+message TransactionResponse {
+  string id = 1;
+  string savings_account_id = 2;
+  string type = 3;
+  double amount = 4;
+  double balance_after = 5;
+  string status = 6;
+  string created_at = 7;
+}
+
+message TransactionsResponse {
+  repeated TransactionResponse transactions = 1;
+}
+

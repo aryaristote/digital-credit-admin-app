@@ -15,6 +15,7 @@ const admins_module_1 = require("./modules/admins/admins.module");
 const users_module_1 = require("./modules/users/users.module");
 const credit_module_1 = require("./modules/credit/credit.module");
 const analytics_module_1 = require("./modules/analytics/analytics.module");
+const transactions_module_1 = require("./modules/transactions/transactions.module");
 const typeorm_config_1 = require("./config/typeorm.config");
 let AppModule = class AppModule {
 };
@@ -36,6 +37,7 @@ exports.AppModule = AppModule = __decorate([
             users_module_1.UsersModule,
             credit_module_1.CreditModule,
             analytics_module_1.AnalyticsModule,
+            transactions_module_1.TransactionsModule,
         ],
     })
 ], AppModule);

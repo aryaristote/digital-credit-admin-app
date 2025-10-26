@@ -1,0 +1,59 @@
+# <type>(<scope>): <subject>
+#
+# <body>
+#
+# <footer>
+
+# Type: The type of change you're making
+#   feat:     A new feature
+#   fix:      A bug fix
+#   docs:     Documentation only changes
+#   style:    Changes that do not affect the meaning of the code
+#   refactor: A code change that neither fixes a bug nor adds a feature
+#   perf:     A code change that improves performance
+#   test:     Adding missing tests or correcting existing tests
+#   chore:    Changes to the build process or auxiliary tools
+#   ci:       Changes to CI configuration files and scripts
+#   build:    Changes that affect the build system or external dependencies
+#
+# Scope: The area of the codebase affected (optional)
+#   Examples: auth, credit, savings, users, admin, frontend, backend
+#
+# Subject: Short description (50 chars or less)
+#   - Use imperative mood ("add feature" not "added feature")
+#   - No period at the end
+#   - Capitalize first letter
+#
+# Body: Detailed explanation (optional)
+#   - Wrap at 72 characters
+#   - Explain why the change was made
+#   - Include any relevant context
+#
+# Footer: Breaking changes or issue references (optional)
+#   - Reference issues: Closes #123, Fixes #456
+#   - Breaking changes: BREAKING CHANGE: description
+
+# Examples:
+# feat(credit): add automatic credit approval based on score
+#
+# Implement automatic credit approval when user credit score >= 600.
+# Credit score determines interest rate:
+# - 750+: 5% interest
+# - 700-749: 7.5% interest
+# - 650-699: 10% interest
+# - 600-649: 15% interest
+#
+# Closes #123
+
+# fix(savings): enforce balance check before withdrawal
+#
+# Add validation to prevent withdrawals when balance is insufficient.
+# Returns 400 Bad Request with detailed error message.
+#
+# Fixes #456
+
+# docs: update API documentation with new endpoints
+#
+# Add Swagger documentation for credit repayment endpoints.
+# Include request/response examples and error codes.
+

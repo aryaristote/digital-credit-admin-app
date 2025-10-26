@@ -35,8 +35,15 @@ export declare class UsersController {
     }>;
     toggleStatus(userId: string): Promise<{
         message: string;
+        user: {
+            id: string;
+            email: string;
+            isActive: boolean;
+        };
     }>;
     updateCreditScore(userId: string, creditScore: number): Promise<{
         message: string;
+        userId: string;
+        creditScore: number;
     }>;
 }

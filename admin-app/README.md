@@ -122,6 +122,12 @@ Complete API documentation is available via Swagger at `/api/v1/docs`.
 - `PUT /api/v1/credit/:id/approve` - Approve credit
 - `GET /api/v1/analytics/dashboard` - Dashboard stats
 
+**Full Documentation**:
+
+- **Backend API Docs**: See `backend/API_DOCUMENTATION.md`
+- **Backend Setup**: See `backend/ADMIN_SETUP_GUIDE.md`
+- **Frontend Setup**: See `frontend/SETUP_GUIDE.md`
+
 ## 🤝 Contributing
 
 1. Follow the same contribution guidelines as the Client Application

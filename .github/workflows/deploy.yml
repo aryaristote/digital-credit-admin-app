@@ -1,0 +1,135 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy to"
+        required: true
+        default: "staging"
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  deploy-client-backend:
+    name: Deploy Client Backend
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+    environment:
+      name: ${{ github.event.inputs.environment || 'production' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: client-app/backend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: client-app/backend
+        run: npm ci
+
+      - name: Build application
+        working-directory: client-app/backend
+        run: npm run build
+
+      - name: Run database migrations
+        working-directory: client-app/backend
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_DATABASE: ${{ secrets.DB_DATABASE }}
+        run: npm run migration:run
+
+      # Add deployment steps based on your infrastructure
+      # Examples:
+      # - Docker build and push
+      # - Deploy to cloud platform (AWS, Azure, GCP)
+      # - SSH deployment
+      # - Kubernetes deployment
+
+  deploy-admin-backend:
+    name: Deploy Admin Backend
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+    environment:
+      name: ${{ github.event.inputs.environment || 'production' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: admin-app/backend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: admin-app/backend
+        run: npm ci
+
+      - name: Build application
+        working-directory: admin-app/backend
+        run: npm run build
+
+      - name: Run database migrations
+        working-directory: admin-app/backend
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_DATABASE: ${{ secrets.DB_DATABASE }}
+        run: npm run migration:run
+
+      # Add deployment steps based on your infrastructure
+
+  deploy-frontends:
+    name: Deploy Frontends
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+    environment:
+      name: ${{ github.event.inputs.environment || 'production' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Build Client Frontend
+        working-directory: client-app/frontend
+        env:
+          VITE_API_URL: ${{ secrets.CLIENT_API_URL }}
+        run: |
+          npm ci
+          npm run build
+
+      - name: Build Admin Frontend
+        working-directory: admin-app/frontend
+        env:
+          VITE_API_URL: ${{ secrets.ADMIN_API_URL }}
+        run: |
+          npm ci
+          npm run build
+
+      # Add deployment steps for frontends
+      # Examples:
+      # - Deploy to Vercel, Netlify, or other static hosting
+      # - Deploy to S3 + CloudFront
+      # - Deploy to CDN

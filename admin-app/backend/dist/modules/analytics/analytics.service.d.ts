@@ -1,7 +1,7 @@
-import { Repository } from 'typeorm';
-import { User } from '../../shared/entities/user.entity';
-import { CreditRequest, CreditStatus } from '../../shared/entities/credit-request.entity';
-import { SavingsAccount } from '../../shared/entities/savings-account.entity';
+import { Repository } from "typeorm";
+import { User } from "../../shared/entities/user.entity";
+import { CreditRequest, CreditStatus } from "../../shared/entities/credit-request.entity";
+import { SavingsAccount } from "../../shared/entities/savings-account.entity";
 export declare class AnalyticsService {
     private userRepository;
     private creditRepository;
@@ -36,4 +36,18 @@ export declare class AnalyticsService {
         status: CreditStatus;
         createdAt: Date;
     }[]>;
+    getMonthlyLoanDisbursement(): Promise<any[]>;
+    getCreditDistributionByScore(): Promise<{
+        range: string;
+        count: number;
+        percentage: number;
+    }[]>;
+    getPerformanceSummary(): Promise<{
+        creditsApprovedThisMonth: number;
+        amountDisbursedThisMonth: number;
+        averageCreditScore: number;
+        repaymentRate: number;
+        totalActiveLoans: number;
+        totalCompletedLoans: number;
+    }>;
 }

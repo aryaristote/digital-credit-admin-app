@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  Logger,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../../shared/entities/user.entity';
@@ -7,6 +12,8 @@ import { UserRole } from '../../common/enums/user-role.enum';
 
 @Injectable()
 export class UsersService {
+  private readonly logger = new Logger(UsersService.name);
+
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
@@ -59,20 +66,44 @@ export class UsersService {
 
   async toggleUserStatus(userId: string) {
     const user = await this.userRepository.findOne({ where: { id: userId } });
-    
+
     if (!user) {
-      throw new Error('User not found');
+      throw new NotFoundException('User not found');
     }
 
     user.isActive = !user.isActive;
     await this.userRepository.save(user);
 
-    return { message: `User ${user.isActive ? 'activated' : 'deactivated'} successfully` };
+    this.logger.log(`User ${userId} ${user.isActive ? 'activated' : 'deactivated'}`);
+
+    return {
+      message: `User ${user.isActive ? 'activated' : 'deactivated'} successfully`,
+      user: {
+        id: user.id,
+        email: user.email,
+        isActive: user.isActive,
+      },
+    };
   }
 
   async updateCreditScore(userId: string, creditScore: number) {
+    if (creditScore < 300 || creditScore > 850) {
+      throw new BadRequestException('Credit score must be between 300 and 850');
+    }
+
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
     await this.userRepository.update(userId, { creditScore });
-    return { message: 'Credit score updated successfully' };
+
+    this.logger.log(`Credit score updated for user ${userId}: ${creditScore}`);
+
+    return {
+      message: 'Credit score updated successfully',
+      userId,
+      creditScore,
+    };
   }
 }
-

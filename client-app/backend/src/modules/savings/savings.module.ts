@@ -8,13 +8,9 @@ import { Transaction } from './entities/transaction.entity';
 import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([SavingsAccount, Transaction]),
-    NotificationsModule,
-  ],
+  imports: [TypeOrmModule.forFeature([SavingsAccount, Transaction]), NotificationsModule],
   controllers: [SavingsController],
   providers: [SavingsService, SavingsRepository],
   exports: [SavingsService],
 })
 export class SavingsModule {}
-

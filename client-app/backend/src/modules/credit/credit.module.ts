@@ -18,6 +18,6 @@ import { NotificationsModule } from '../notifications/notifications.module';
   ],
   controllers: [CreditController],
   providers: [CreditService, CreditRepository],
-  exports: [CreditService],
+  exports: [CreditService, CreditRepository],
 })
 export class CreditModule {}

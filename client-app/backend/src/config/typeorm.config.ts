@@ -25,6 +25,9 @@ export const dataSourceOptions: DataSourceOptions = {
   database: process.env.DB_DATABASE || 'digital_credit_client',
   entities: [join(__dirname, '..', 'modules', '**', '*.entity{.ts,.js}')],
   migrations: [join(__dirname, '..', 'database', 'migrations', '*{.ts,.js}')],
+  migrationsTableName: 'migrations',
+  migrationsRun: false,
+  synchronize: false, // Disable synchronize in production
 };
 
 const dataSource = new DataSource(dataSourceOptions);

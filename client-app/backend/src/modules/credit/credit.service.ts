@@ -71,7 +71,10 @@ export class CreditService {
         `Your credit request of ${createCreditRequestDto.requestedAmount} has been submitted and is pending admin approval.`,
         NotificationType.INFO,
         '/credit',
-        { creditRequestId: creditRequest.id, amount: createCreditRequestDto.requestedAmount },
+        {
+          creditRequestId: creditRequest.id,
+          amount: createCreditRequestDto.requestedAmount,
+        },
       );
     } catch (error) {
       console.error('Failed to create notification:', error);
@@ -159,12 +162,14 @@ export class CreditService {
 
     // Get updated credit request to check if completed
     const updatedCreditRequest = await this.creditRepository.findById(creditRequestId);
-    const totalOwed = Number(updatedCreditRequest.approvedAmount) * (1 + Number(updatedCreditRequest.interestRate) / 100);
-    const remainingBalance = totalOwed - Number(updatedCreditRequest.totalRepaid);
+    const updatedTotalOwed =
+      Number(updatedCreditRequest.approvedAmount) *
+      (1 + Number(updatedCreditRequest.interestRate) / 100);
+    const updatedRemainingBalance = updatedTotalOwed - Number(updatedCreditRequest.totalRepaid);
 
     // Create notification for credit repayment
     try {
-      if (remainingBalance <= 0) {
+      if (updatedRemainingBalance <= 0) {
         // Credit fully repaid
         await this.notificationsService.createNotification(
           userId,
@@ -179,10 +184,10 @@ export class CreditService {
         await this.notificationsService.createNotification(
           userId,
           'Credit Payment Received',
-          `Your payment of ${repayCreditDto.amount} has been processed. Remaining balance: ${remainingBalance.toFixed(2)}`,
+          `Your payment of ${repayCreditDto.amount} has been processed. Remaining balance: ${updatedRemainingBalance.toFixed(2)}`,
           NotificationType.SUCCESS,
           '/credit',
-          { creditRequestId, amount: repayCreditDto.amount, remainingBalance },
+          { creditRequestId, amount: repayCreditDto.amount, remainingBalance: updatedRemainingBalance },
         );
       }
     } catch (error) {

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Users, CreditCard, TrendingUp, AlertCircle } from "lucide-react";
+import { Users, CreditCard, TrendingUp, AlertCircle, BarChart3, PieChart } from "lucide-react";
 import Card from "../components/ui/Card";
 import api from "../lib/api";
 import { formatCurrency } from "../lib/utils";
+import { toast } from "sonner";
 
 interface DashboardStats {
   totalUsers: number;
@@ -126,38 +127,257 @@ export default function Dashboard() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            Recent Activity
-          </h3>
-          <div className="text-gray-600">
-            <p className="text-sm">No recent activity to display</p>
-          </div>
-        </Card>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <MonthlyDisbursementCard />
+        <CreditDistributionCard />
+      </div>
 
-        <Card>
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            System Status
-          </h3>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Database</span>
-              <span className="text-sm font-medium text-green-600">Online</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">API Server</span>
-              <span className="text-sm font-medium text-green-600">Online</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Background Jobs</span>
-              <span className="text-sm font-medium text-green-600">
-                Running
-              </span>
-            </div>
-          </div>
-        </Card>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <PerformanceSummaryCard />
+        <RecentActivityCard />
       </div>
     </div>
+  );
+}
+
+// Monthly Loan Disbursement Card Component
+function MonthlyDisbursementCard() {
+  const [data, setData] = useState<Array<{ month: string; amount: number }>>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get("/analytics/monthly-disbursement");
+        setData(response.data || []);
+      } catch (error) {
+        console.error("Failed to fetch monthly disbursement:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const maxAmount = Math.max(...data.map((d) => d.amount), 1);
+
+  return (
+    <Card>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold text-gray-900">
+          Monthly Loan Disbursement
+        </h3>
+        <BarChart3 className="w-5 h-5 text-gray-400" />
+      </div>
+      {loading ? (
+        <div className="text-center py-8 text-gray-500">Loading...</div>
+      ) : data.length === 0 ? (
+        <div className="text-center py-8 text-gray-500">No data available</div>
+      ) : (
+        <div className="space-y-3">
+          {data.map((item, index) => (
+            <div key={index}>
+              <div className="flex justify-between text-sm mb-1">
+                <span className="text-gray-600">{item.month}</span>
+                <span className="font-medium">{formatCurrency(item.amount)}</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div
+                  className="bg-primary-600 h-2 rounded-full transition-all"
+                  style={{ width: `${(item.amount / maxAmount) * 100}%` }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </Card>
+  );
+}
+
+// Credit Distribution by Score Card Component
+function CreditDistributionCard() {
+  const [data, setData] = useState<Array<{ range: string; count: number }>>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get("/analytics/credit-distribution");
+        const distribution = response.data || [];
+        const total = distribution.reduce((sum: number, item: any) => sum + item.count, 0);
+        const withPercentage = distribution.map((item: any) => ({
+          ...item,
+          percentage: total > 0 ? (item.count / total) * 100 : 0,
+        }));
+        setData(withPercentage);
+      } catch (error) {
+        console.error("Failed to fetch credit distribution:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  return (
+    <Card>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold text-gray-900">
+          Credit Distribution by Score
+        </h3>
+        <PieChart className="w-5 h-5 text-gray-400" />
+      </div>
+      {loading ? (
+        <div className="text-center py-8 text-gray-500">Loading...</div>
+      ) : data.length === 0 ? (
+        <div className="text-center py-8 text-gray-500">No data available</div>
+      ) : (
+        <div className="space-y-3">
+          {data.map((item, index) => (
+            <div key={index}>
+              <div className="flex justify-between text-sm mb-1">
+                <span className="text-gray-600">{item.range}</span>
+                <span className="font-medium">
+                  {item.count} ({item.percentage.toFixed(1)}%)
+                </span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div
+                  className="bg-primary-600 h-2 rounded-full transition-all"
+                  style={{ width: `${item.percentage}%` }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </Card>
+  );
+}
+
+// Performance Summary Card Component
+function PerformanceSummaryCard() {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get("/analytics/performance-summary");
+        setData(response.data);
+      } catch (error) {
+        console.error("Failed to fetch performance summary:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  return (
+    <Card>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold text-gray-900">
+          Performance Summary
+        </h3>
+        <TrendingUp className="w-5 h-5 text-gray-400" />
+      </div>
+      {loading ? (
+        <div className="text-center py-8 text-gray-500">Loading...</div>
+      ) : !data ? (
+        <div className="text-center py-8 text-gray-500">No data available</div>
+      ) : (
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-gray-600">Credits Approved (This Month)</span>
+            <span className="font-semibold text-gray-900">{data.creditsApprovedThisMonth}</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-gray-600">Amount Disbursed (This Month)</span>
+            <span className="font-semibold text-gray-900">
+              {formatCurrency(data.amountDisbursedThisMonth)}
+            </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-gray-600">Average Credit Score</span>
+            <span className="font-semibold text-gray-900">
+              {Math.round(data.averageCreditScore)}
+            </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-gray-600">Repayment Rate</span>
+            <span className="font-semibold text-green-600">
+              {data.repaymentRate.toFixed(1)}%
+            </span>
+          </div>
+          <div className="flex justify-between items-center pt-2 border-t border-gray-200">
+            <span className="text-sm text-gray-600">Active Loans</span>
+            <span className="font-semibold text-blue-600">{data.totalActiveLoans}</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-gray-600">Completed Loans</span>
+            <span className="font-semibold text-green-600">{data.totalCompletedLoans}</span>
+          </div>
+        </div>
+      )}
+    </Card>
+  );
+}
+
+// Recent Activity Card Component
+function RecentActivityCard() {
+  const [activities, setActivities] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get("/analytics/recent-activity?limit=5");
+        setActivities(response.data || []);
+      } catch (error) {
+        console.error("Failed to fetch recent activity:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  return (
+    <Card>
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        Recent Activity
+      </h3>
+      {loading ? (
+        <div className="text-center py-8 text-gray-500">Loading...</div>
+      ) : activities.length === 0 ? (
+        <div className="text-center py-8 text-gray-500">No recent activity</div>
+      ) : (
+        <div className="space-y-3">
+          {activities.map((activity, index) => (
+            <div key={index} className="flex items-start justify-between">
+              <div className="flex-1">
+                <p className="text-sm font-medium text-gray-900">{activity.user}</p>
+                <p className="text-xs text-gray-500">{activity.action}</p>
+              </div>
+              <span
+                className={`text-xs px-2 py-1 rounded ${
+                  activity.status === "pending"
+                    ? "bg-yellow-100 text-yellow-800"
+                    : activity.status === "active"
+                    ? "bg-blue-100 text-blue-800"
+                    : activity.status === "completed"
+                    ? "bg-green-100 text-green-800"
+                    : "bg-gray-100 text-gray-800"
+                }`}
+              >
+                {activity.status}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </Card>
   );
 }

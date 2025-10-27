@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  # Backend Service - Production
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: production
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    restart: always
+
+  # Frontend Service - Production
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    environment:
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:3002/api/v1}
+    ports:
+      - "80:80"
+    restart: always
+    depends_on:
+      - backend

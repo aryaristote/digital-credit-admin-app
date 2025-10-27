@@ -1,15 +1,3 @@
-<<<<<<< HEAD
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { User } from "../../shared/entities/user.entity";
-import {
-  CreditRequest,
-  CreditStatus,
-} from "../../shared/entities/credit-request.entity";
-import { SavingsAccount } from "../../shared/entities/savings-account.entity";
-import { UserRole } from "../../common/enums/user-role.enum";
-=======
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -17,7 +5,6 @@ import { User } from '../../shared/entities/user.entity';
 import { CreditRequest, CreditStatus } from '../../shared/entities/credit-request.entity';
 import { SavingsAccount } from '../../shared/entities/savings-account.entity';
 import { UserRole } from '../../common/enums/user-role.enum';
->>>>>>> df7f6995b67ad7f501ed986ef84dafe16bad222b
 
 @Injectable()
 export class AnalyticsService {
@@ -27,86 +14,46 @@ export class AnalyticsService {
     @InjectRepository(CreditRequest)
     private creditRepository: Repository<CreditRequest>,
     @InjectRepository(SavingsAccount)
-<<<<<<< HEAD
-    private savingsRepository: Repository<SavingsAccount>
-=======
     private savingsRepository: Repository<SavingsAccount>,
->>>>>>> df7f6995b67ad7f501ed986ef84dafe16bad222b
   ) {}
 
   async getDashboardStats() {
     // User statistics
     const [totalUsers, activeUsers, newUsersThisMonth] = await Promise.all([
       this.userRepository.count({ where: { role: UserRole.CUSTOMER } }),
-<<<<<<< HEAD
       this.userRepository.count({
         where: { role: UserRole.CUSTOMER, isActive: true },
       }),
-      this.userRepository
-        .createQueryBuilder("user")
-        .where("user.role = :role", { role: UserRole.CUSTOMER })
-        .andWhere("user.createdAt >= :startOfMonth", {
-          startOfMonth: new Date(
-            new Date().getFullYear(),
-            new Date().getMonth(),
-            1
-          ),
-=======
-      this.userRepository.count({ where: { role: UserRole.CUSTOMER, isActive: true } }),
       this.userRepository
         .createQueryBuilder('user')
         .where('user.role = :role', { role: UserRole.CUSTOMER })
         .andWhere('user.createdAt >= :startOfMonth', {
           startOfMonth: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
->>>>>>> df7f6995b67ad7f501ed986ef84dafe16bad222b
         })
         .getCount(),
     ]);
 
     // Credit statistics
-    const [
-      totalCreditRequests,
-      pendingCredits,
-      activeCredits,
-      completedCredits,
-    ] = await Promise.all([
-      this.creditRepository.count(),
-      this.creditRepository.count({ where: { status: CreditStatus.PENDING } }),
-      this.creditRepository.count({ where: { status: CreditStatus.ACTIVE } }),
-<<<<<<< HEAD
-      this.creditRepository.count({
-        where: { status: CreditStatus.COMPLETED },
-      }),
-=======
-      this.creditRepository.count({ where: { status: CreditStatus.COMPLETED } }),
->>>>>>> df7f6995b67ad7f501ed986ef84dafe16bad222b
-    ]);
+    const [totalCreditRequests, pendingCredits, activeCredits, completedCredits] =
+      await Promise.all([
+        this.creditRepository.count(),
+        this.creditRepository.count({ where: { status: CreditStatus.PENDING } }),
+        this.creditRepository.count({ where: { status: CreditStatus.ACTIVE } }),
+        this.creditRepository.count({
+          where: { status: CreditStatus.COMPLETED },
+        }),
+      ]);
 
     // Financial statistics
     const totalDisbursedResult = await this.creditRepository
-<<<<<<< HEAD
-      .createQueryBuilder("credit")
-      .select("SUM(credit.approvedAmount)", "total")
-      .where("credit.status IN (:...statuses)", {
-=======
       .createQueryBuilder('credit')
       .select('SUM(credit.approvedAmount)', 'total')
       .where('credit.status IN (:...statuses)', {
->>>>>>> df7f6995b67ad7f501ed986ef84dafe16bad222b
         statuses: [CreditStatus.ACTIVE, CreditStatus.COMPLETED],
       })
       .getRawOne();
 
     const totalRepaidResult = await this.creditRepository
-<<<<<<< HEAD
-      .createQueryBuilder("credit")
-      .select("SUM(credit.totalRepaid)", "total")
-      .getRawOne();
-
-    const totalSavingsResult = await this.savingsRepository
-      .createQueryBuilder("savings")
-      .select("SUM(savings.balance)", "total")
-=======
       .createQueryBuilder('credit')
       .select('SUM(credit.totalRepaid)', 'total')
       .getRawOne();
@@ -114,7 +61,6 @@ export class AnalyticsService {
     const totalSavingsResult = await this.savingsRepository
       .createQueryBuilder('savings')
       .select('SUM(savings.balance)', 'total')
->>>>>>> df7f6995b67ad7f501ed986ef84dafe16bad222b
       .getRawOne();
 
     return {
@@ -130,36 +76,21 @@ export class AnalyticsService {
         completed: completedCredits,
       },
       financials: {
-<<<<<<< HEAD
-        totalDisbursed: parseFloat(totalDisbursedResult?.total || "0"),
-        totalRepaid: parseFloat(totalRepaidResult?.total || "0"),
-        totalSavings: parseFloat(totalSavingsResult?.total || "0"),
-=======
         totalDisbursed: parseFloat(totalDisbursedResult?.total || '0'),
         totalRepaid: parseFloat(totalRepaidResult?.total || '0'),
         totalSavings: parseFloat(totalSavingsResult?.total || '0'),
->>>>>>> df7f6995b67ad7f501ed986ef84dafe16bad222b
       },
     };
   }
 
   async getCreditScoreDistribution() {
     const distribution = await this.userRepository
-<<<<<<< HEAD
-      .createQueryBuilder("user")
-      .select("FLOOR(user.creditScore / 50) * 50", "range")
-      .addSelect("COUNT(*)", "count")
-      .where("user.role = :role", { role: UserRole.CUSTOMER })
-      .groupBy("range")
-      .orderBy("range", "ASC")
-=======
       .createQueryBuilder('user')
       .select('FLOOR(user.creditScore / 50) * 50', 'range')
       .addSelect('COUNT(*)', 'count')
       .where('user.role = :role', { role: UserRole.CUSTOMER })
       .groupBy('range')
       .orderBy('range', 'ASC')
->>>>>>> df7f6995b67ad7f501ed986ef84dafe16bad222b
       .getRawMany();
 
     return distribution.map((item) => ({
@@ -170,41 +101,27 @@ export class AnalyticsService {
 
   async getRecentActivity(limit: number = 10) {
     const recentCredits = await this.creditRepository.find({
-<<<<<<< HEAD
-      relations: ["user"],
-      order: { createdAt: "DESC" },
-=======
       relations: ['user'],
       order: { createdAt: 'DESC' },
->>>>>>> df7f6995b67ad7f501ed986ef84dafe16bad222b
       take: limit,
     });
 
     return recentCredits.map((credit) => ({
-<<<<<<< HEAD
-      type: "credit",
-=======
       type: 'credit',
->>>>>>> df7f6995b67ad7f501ed986ef84dafe16bad222b
       user: `${credit.user.firstName} ${credit.user.lastName}`,
       action: `Requested ${credit.requestedAmount} credit`,
       status: credit.status,
       createdAt: credit.createdAt,
     }));
   }
-<<<<<<< HEAD
 
   async getMonthlyLoanDisbursement() {
-    console.log("📊 [ANALYTICS] Fetching monthly loan disbursement data...");
+    console.log('📊 [ANALYTICS] Fetching monthly loan disbursement data...');
 
     // Get last 6 months of data
     const months = [];
     for (let i = 5; i >= 0; i--) {
-      const monthStart = new Date(
-        new Date().getFullYear(),
-        new Date().getMonth() - i,
-        1
-      );
+      const monthStart = new Date(new Date().getFullYear(), new Date().getMonth() - i, 1);
       const monthEnd = new Date(
         new Date().getFullYear(),
         new Date().getMonth() - i + 1,
@@ -212,28 +129,28 @@ export class AnalyticsService {
         23,
         59,
         59,
-        999
+        999,
       );
 
       // Query for approved credits in this month
       // Use approvedAt if available, otherwise use createdAt as fallback
       const result = await this.creditRepository
-        .createQueryBuilder("credit")
-        .select("SUM(credit.approvedAmount)", "total")
-        .where("credit.status IN (:...statuses)", {
+        .createQueryBuilder('credit')
+        .select('SUM(credit.approvedAmount)', 'total')
+        .where('credit.status IN (:...statuses)', {
           statuses: [CreditStatus.ACTIVE, CreditStatus.COMPLETED],
         })
-        .andWhere("credit.approvedAmount > 0") // Only count actual disbursements
+        .andWhere('credit.approvedAmount > 0') // Only count actual disbursements
         .andWhere(
-          "(credit.approvedAt >= :start AND credit.approvedAt <= :end) OR (credit.approvedAt IS NULL AND credit.createdAt >= :start AND credit.createdAt <= :end)",
-          { start: monthStart, end: monthEnd }
+          '(credit.approvedAt >= :start AND credit.approvedAt <= :end) OR (credit.approvedAt IS NULL AND credit.createdAt >= :start AND credit.createdAt <= :end)',
+          { start: monthStart, end: monthEnd },
         )
         .getRawOne();
 
-      const amount = parseFloat(result?.total || "0");
-      const monthLabel = monthStart.toLocaleDateString("en-US", {
-        month: "short",
-        year: "numeric",
+      const amount = parseFloat(result?.total || '0');
+      const monthLabel = monthStart.toLocaleDateString('en-US', {
+        month: 'short',
+        year: 'numeric',
       });
 
       console.log(`📅 [ANALYTICS] ${monthLabel}: ${amount} (from database)`);
@@ -244,18 +161,18 @@ export class AnalyticsService {
       });
     }
 
-    console.log("✅ [ANALYTICS] Monthly disbursement data fetched:", months);
+    console.log('✅ [ANALYTICS] Monthly disbursement data fetched:', months);
     return months;
   }
 
   async getCreditDistributionByScore() {
     const distribution = await this.userRepository
-      .createQueryBuilder("user")
-      .select("FLOOR(user.creditScore / 50) * 50", "range")
-      .addSelect("COUNT(*)", "count")
-      .where("user.role = :role", { role: UserRole.CUSTOMER })
-      .groupBy("range")
-      .orderBy("range", "ASC")
+      .createQueryBuilder('user')
+      .select('FLOOR(user.creditScore / 50) * 50', 'range')
+      .addSelect('COUNT(*)', 'count')
+      .where('user.role = :role', { role: UserRole.CUSTOMER })
+      .groupBy('range')
+      .orderBy('range', 'ASC')
       .getRawMany();
 
     return distribution.map((item) => ({
@@ -267,61 +184,55 @@ export class AnalyticsService {
 
   async getPerformanceSummary() {
     // Total credits approved this month
-    const startOfMonth = new Date(
-      new Date().getFullYear(),
-      new Date().getMonth(),
-      1
-    );
+    const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
     const creditsThisMonth = await this.creditRepository
-      .createQueryBuilder("credit")
-      .where("credit.status IN (:...statuses)", {
+      .createQueryBuilder('credit')
+      .where('credit.status IN (:...statuses)', {
         statuses: [CreditStatus.ACTIVE, CreditStatus.COMPLETED],
       })
-      .andWhere("credit.approvedAt >= :start", { start: startOfMonth })
+      .andWhere('credit.approvedAt >= :start', { start: startOfMonth })
       .getCount();
 
     // Total amount disbursed this month
     const disbursedThisMonth = await this.creditRepository
-      .createQueryBuilder("credit")
-      .select("SUM(credit.approvedAmount)", "total")
-      .where("credit.status IN (:...statuses)", {
+      .createQueryBuilder('credit')
+      .select('SUM(credit.approvedAmount)', 'total')
+      .where('credit.status IN (:...statuses)', {
         statuses: [CreditStatus.ACTIVE, CreditStatus.COMPLETED],
       })
-      .andWhere("credit.approvedAt >= :start", { start: startOfMonth })
+      .andWhere('credit.approvedAt >= :start', { start: startOfMonth })
       .getRawOne();
 
     // Average credit score
     const avgCreditScore = await this.userRepository
-      .createQueryBuilder("user")
-      .select("AVG(user.creditScore)", "avg")
-      .where("user.role = :role", { role: UserRole.CUSTOMER })
+      .createQueryBuilder('user')
+      .select('AVG(user.creditScore)', 'avg')
+      .where('user.role = :role', { role: UserRole.CUSTOMER })
       .getRawOne();
 
     // Repayment rate (total repaid / total disbursed)
     const totalDisbursed = await this.creditRepository
-      .createQueryBuilder("credit")
-      .select("SUM(credit.approvedAmount)", "total")
-      .where("credit.status IN (:...statuses)", {
+      .createQueryBuilder('credit')
+      .select('SUM(credit.approvedAmount)', 'total')
+      .where('credit.status IN (:...statuses)', {
         statuses: [CreditStatus.ACTIVE, CreditStatus.COMPLETED],
       })
       .getRawOne();
 
     const totalRepaid = await this.creditRepository
-      .createQueryBuilder("credit")
-      .select("SUM(credit.totalRepaid)", "total")
+      .createQueryBuilder('credit')
+      .select('SUM(credit.totalRepaid)', 'total')
       .getRawOne();
 
-    const totalDisbursedAmount = parseFloat(totalDisbursed?.total || "0");
-    const totalRepaidAmount = parseFloat(totalRepaid?.total || "0");
+    const totalDisbursedAmount = parseFloat(totalDisbursed?.total || '0');
+    const totalRepaidAmount = parseFloat(totalRepaid?.total || '0');
     const repaymentRate =
-      totalDisbursedAmount > 0
-        ? (totalRepaidAmount / totalDisbursedAmount) * 100
-        : 0;
+      totalDisbursedAmount > 0 ? (totalRepaidAmount / totalDisbursedAmount) * 100 : 0;
 
     return {
       creditsApprovedThisMonth: creditsThisMonth,
-      amountDisbursedThisMonth: parseFloat(disbursedThisMonth?.total || "0"),
-      averageCreditScore: parseFloat(avgCreditScore?.avg || "0"),
+      amountDisbursedThisMonth: parseFloat(disbursedThisMonth?.total || '0'),
+      averageCreditScore: parseFloat(avgCreditScore?.avg || '0'),
       repaymentRate: repaymentRate,
       totalActiveLoans: await this.creditRepository.count({
         where: { status: CreditStatus.ACTIVE },
@@ -332,7 +243,3 @@ export class AnalyticsService {
     };
   }
 }
-=======
-}
-
->>>>>>> df7f6995b67ad7f501ed986ef84dafe16bad222b

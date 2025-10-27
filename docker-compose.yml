@@ -1,0 +1,75 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: admin-app-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: digital_credit_client
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - admin-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend Service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: admin-app-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 5430
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: root
+      DB_DATABASE: digital_credit_client
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-change-in-production}
+      API_PREFIX: api/v1
+    ports:
+      - "5430:5430"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - admin-network
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  # Frontend Service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: admin-app-frontend
+    restart: unless-stopped
+    environment:
+      VITE_API_URL: http://localhost:5430/api/v1
+    ports:
+      - "5174:5174"
+    depends_on:
+      - backend
+    networks:
+      - admin-network
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+networks:
+  admin-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

@@ -6,7 +6,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "build": "nest build",
+    "build": "nest build || npx nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "dev": "nest start --watch",
@@ -25,6 +25,7 @@
     "migration:revert": "npm run typeorm -- migration:revert -d src/config/typeorm.config.ts",
     "migration:show": "npm run typeorm -- migration:show -d src/config/typeorm.config.ts",
     "seed:admin": "ts-node -r tsconfig-paths/register src/scripts/create-admin.ts",
+    "seed:admin-user": "ts-node -r tsconfig-paths/register src/scripts/create-admin-user.ts",
     "seed": "ts-node -r tsconfig-paths/register src/database/seeds/run-seed.ts"
   },
   "dependencies": {

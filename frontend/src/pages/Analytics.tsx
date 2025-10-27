@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { TrendingUp, TrendingDown, Users, CreditCard } from "lucide-react";
 import Card from "../components/ui/Card";
 import { formatCurrency } from "../lib/utils";

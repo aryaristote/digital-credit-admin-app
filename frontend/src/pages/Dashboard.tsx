@@ -208,7 +208,9 @@ function MonthlyDisbursementCard() {
 
 // Credit Distribution by Score Card Component
 function CreditDistributionCard() {
-  const [data, setData] = useState<Array<{ range: string; count: number }>>([]);
+  const [data, setData] = useState<
+    Array<{ range: string; count: number; percentage: number }>
+  >([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

@@ -5,9 +5,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToOne,
+  OneToMany,
   JoinColumn,
 } from 'typeorm';
 import { User } from './user.entity';
+import { Transaction } from './transaction.entity';
 
 @Entity('savings_accounts')
 export class SavingsAccount {
@@ -38,5 +40,11 @@ export class SavingsAccount {
   @OneToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   user: User;
+<<<<<<< HEAD
+
+  @OneToMany(() => Transaction, (transaction) => transaction.savingsAccount)
+  transactions: Transaction[];
+=======
+>>>>>>> df7f6995b67ad7f501ed986ef84dafe16bad222b
 }
 

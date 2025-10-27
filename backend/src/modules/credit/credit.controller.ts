@@ -1,3 +1,6 @@
+<<<<<<< HEAD
+import { Controller, Get, Put, Param, Query, Body, UseGuards } from '@nestjs/common';
+=======
 import {
   Controller,
   Get,
@@ -7,6 +10,7 @@ import {
   Body,
   UseGuards,
 } from '@nestjs/common';
+>>>>>>> df7f6995b67ad7f501ed986ef84dafe16bad222b
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { AdminGuard } from '../../common/guards/admin.guard';
@@ -36,7 +40,17 @@ export class CreditController {
     @Query('limit') limit: number = 10,
     @Query('status') status?: string,
   ) {
+<<<<<<< HEAD
+    console.log(
+      '📥 [CREDIT CONTROLLER] Fetching credit requests - status:',
+      status || 'all',
+    );
+    const result = await this.creditService.getAllRequests(page, limit, status);
+    console.log('✅ [CREDIT CONTROLLER] Found', result.total, 'credit requests');
+    return result;
+=======
     return await this.creditService.getAllRequests(page, limit, status);
+>>>>>>> df7f6995b67ad7f501ed986ef84dafe16bad222b
   }
 
   @Get('stats')
@@ -64,5 +78,61 @@ export class CreditController {
   ) {
     return await this.creditService.rejectRequest(requestId, adminId, reason);
   }
+<<<<<<< HEAD
+
+  @Put('bulk/approve')
+  @ApiOperation({ summary: 'Bulk approve credit requests' })
+  async bulkApprove(
+    @CurrentUser('id') adminId: string,
+    @Body() body: { requestIds: string[]; approvedAmounts?: { [key: string]: number } },
+  ) {
+    return await this.creditService.bulkApproveRequests(
+      body.requestIds,
+      adminId,
+      body.approvedAmounts,
+    );
+  }
+
+  @Put('bulk/reject')
+  @ApiOperation({ summary: 'Bulk reject credit requests' })
+  async bulkReject(
+    @CurrentUser('id') adminId: string,
+    @Body() body: { requestIds: string[]; reason: string },
+  ) {
+    return await this.creditService.bulkRejectRequests(
+      body.requestIds,
+      adminId,
+      body.reason,
+    );
+  }
+
+  @Get('search')
+  @ApiOperation({ summary: 'Advanced search for credit requests' })
+  async searchCredits(
+    @Query('status') status?: string,
+    @Query('minAmount') minAmount?: number,
+    @Query('maxAmount') maxAmount?: number,
+    @Query('minCreditScore') minCreditScore?: number,
+    @Query('maxCreditScore') maxCreditScore?: number,
+    @Query('dateFrom') dateFrom?: string,
+    @Query('dateTo') dateTo?: string,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ) {
+    return await this.creditService.searchCredits({
+      status,
+      minAmount,
+      maxAmount,
+      minCreditScore,
+      maxCreditScore,
+      dateFrom: dateFrom ? new Date(dateFrom) : undefined,
+      dateTo: dateTo ? new Date(dateTo) : undefined,
+      page,
+      limit,
+    });
+  }
+}
+=======
 }
 
+>>>>>>> df7f6995b67ad7f501ed986ef84dafe16bad222b

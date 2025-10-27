@@ -28,5 +28,22 @@ export class AnalyticsController {
   async getRecentActivity(@Query('limit') limit: number = 10) {
     return await this.analyticsService.getRecentActivity(limit);
   }
-}
 
+  @Get('monthly-disbursement')
+  @ApiOperation({ summary: 'Get monthly loan disbursement data' })
+  async getMonthlyLoanDisbursement() {
+    return await this.analyticsService.getMonthlyLoanDisbursement();
+  }
+
+  @Get('credit-distribution')
+  @ApiOperation({ summary: 'Get credit distribution by score' })
+  async getCreditDistributionByScore() {
+    return await this.analyticsService.getCreditDistributionByScore();
+  }
+
+  @Get('performance-summary')
+  @ApiOperation({ summary: 'Get performance summary metrics' })
+  async getPerformanceSummary() {
+    return await this.analyticsService.getPerformanceSummary();
+  }
+}

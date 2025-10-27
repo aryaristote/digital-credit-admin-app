@@ -121,6 +121,10 @@ API Documentation: `http://localhost:3002/api/v1/docs`
 
 ## 🏗️ Architecture
 
+See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed architecture documentation.
+
+**Architecture Overview:**
+
 ```
 backend/
 ├── src/
@@ -142,14 +146,83 @@ backend/
 └── package.json
 ```
 
-## 🧪 Testing
+## 🗄️ Database Migrations & Seeds
 
-Run tests:
+### Running Migrations
 
 ```bash
-npm run test
-npm run test:cov
+# Run pending migrations
+npm run migration:run
+
+# Revert last migration
+npm run migration:revert
+
+# Generate migration from entity changes
+npm run migration:generate -- MigrationName
+
+# Show migration status
+npm run migration:show
 ```
+
+### Seeding Database
+
+```bash
+# Seed admin user
+npm run seed
+
+# Or use the admin creation script
+npm run seed:admin
+```
+
+**Seed Data:**
+
+- Admin user: admin@example.com / Admin123!
+
+See [DATABASE_MIGRATIONS.md](../../DATABASE_MIGRATIONS.md) for complete guide.
+
+## 🧪 Testing & Code Quality
+
+### Running Tests
+
+```bash
+# Unit tests
+npm run test
+
+# Watch mode
+npm run test:watch
+
+# Coverage report
+npm run test:cov
+
+# Debug tests
+npm run test:debug
+```
+
+### Code Quality
+
+```bash
+# Linting
+npm run lint              # Lint and auto-fix
+
+# Formatting
+npm run format            # Format all files
+
+# Type checking
+tsc --noEmit              # Check types without building
+```
+
+### Coverage Goals
+
+- **Statements**: 80%+
+- **Branches**: 75%+
+- **Functions**: 80%+
+- **Lines**: 80%+
+
+### Documentation
+
+- 📘 [Code Quality Guide](../../CODE_QUALITY.md)
+- 🧪 [Testing Guide](../../TESTING_GUIDE.md)
+- ✅ [Code Quality Checklist](../../CODE_QUALITY_CHECKLIST.md)
 
 ## 📝 Default Admin Account
 
@@ -169,9 +242,19 @@ VALUES (
 );
 ```
 
-Or use the seed script (if implemented).
+Or use the seed script:
+
+```bash
+npm run seed:admin
+```
+
+## 📚 Documentation
+
+- **Setup Guide**: See `ADMIN_SETUP_GUIDE.md` for detailed setup instructions
+- **Create Admin Guide**: See `CREATE_ADMIN_GUIDE.md` for admin user creation
+- **API Documentation**: See `API_DOCUMENTATION.md` for complete API reference
+- **Swagger UI**: Visit `http://localhost:3002/api/v1/docs` for interactive API docs
 
 ## 📄 License
 
 MIT License
-

@@ -13,7 +13,7 @@ RUN npm ci
 COPY . .
 
 # Expose the port
-EXPOSE 5174
+EXPOSE 9001
 
 # Start the development server with host binding
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "5174"]
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "9001"]

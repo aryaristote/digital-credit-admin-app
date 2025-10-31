@@ -1,16 +1,4 @@
-<<<<<<< HEAD
 import { Controller, Get, Put, Param, Query, Body, UseGuards } from '@nestjs/common';
-=======
-import {
-  Controller,
-  Get,
-  Put,
-  Param,
-  Query,
-  Body,
-  UseGuards,
-} from '@nestjs/common';
->>>>>>> df7f6995b67ad7f501ed986ef84dafe16bad222b
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { AdminGuard } from '../../common/guards/admin.guard';
@@ -40,7 +28,6 @@ export class CreditController {
     @Query('limit') limit: number = 10,
     @Query('status') status?: string,
   ) {
-<<<<<<< HEAD
     console.log(
       '📥 [CREDIT CONTROLLER] Fetching credit requests - status:',
       status || 'all',
@@ -48,9 +35,6 @@ export class CreditController {
     const result = await this.creditService.getAllRequests(page, limit, status);
     console.log('✅ [CREDIT CONTROLLER] Found', result.total, 'credit requests');
     return result;
-=======
-    return await this.creditService.getAllRequests(page, limit, status);
->>>>>>> df7f6995b67ad7f501ed986ef84dafe16bad222b
   }
 
   @Get('stats')
@@ -78,7 +62,6 @@ export class CreditController {
   ) {
     return await this.creditService.rejectRequest(requestId, adminId, reason);
   }
-<<<<<<< HEAD
 
   @Put('bulk/approve')
   @ApiOperation({ summary: 'Bulk approve credit requests' })
@@ -132,7 +115,3 @@ export class CreditController {
     });
   }
 }
-=======
-}
-
->>>>>>> df7f6995b67ad7f501ed986ef84dafe16bad222b

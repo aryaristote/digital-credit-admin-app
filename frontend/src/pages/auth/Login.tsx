@@ -25,17 +25,63 @@ export default function Login() {
   } = useForm<LoginForm>();
 
   const onSubmit = async (data: LoginForm) => {
+    console.log("🚀 [LOGIN] Starting login attempt");
+    console.log("📧 [LOGIN] Email:", data.email);
+    console.log("🔐 [LOGIN] Password length:", data.password.length);
+
     setIsLoading(true);
+
     try {
+      console.log("📡 [LOGIN] Making API call to /auth/login");
+      console.log("🌐 [LOGIN] Base URL:", api.defaults.baseURL);
+      console.log("📦 [LOGIN] Request data:", {
+        email: data.email,
+        password: "***",
+      });
+
       const response = await api.post("/auth/login", data);
+
+      console.log("✅ [LOGIN] Response received");
+      console.log("📥 [LOGIN] Response status:", response.status);
+      console.log("📥 [LOGIN] Response data:", response.data);
+
       const { accessToken, refreshToken, user } = response.data;
-      
+
+      console.log(
+        "🔑 [LOGIN] Access token received:",
+        accessToken ? "Yes" : "No"
+      );
+      console.log(
+        "🔄 [LOGIN] Refresh token received:",
+        refreshToken ? "Yes" : "No"
+      );
+      console.log("👤 [LOGIN] User data:", user);
+
       setAuth(accessToken, refreshToken, user);
+      console.log("💾 [LOGIN] Auth data saved to store");
+
       toast.success("Login successful!");
+      console.log("✅ [LOGIN] Login successful, navigating to dashboard");
       navigate("/");
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Login failed");
+      console.error("❌ [LOGIN] Login failed");
+      console.error("❌ [LOGIN] Error object:", error);
+      console.error("❌ [LOGIN] Error message:", error.message);
+      console.error("❌ [LOGIN] Error code:", error.code);
+      console.error("❌ [LOGIN] Error response:", error.response);
+      console.error("❌ [LOGIN] Error status:", error.response?.status);
+      console.error("❌ [LOGIN] Error data:", error.response?.data);
+      console.error("❌ [LOGIN] Is Network Error:", !error.response);
+      console.error("❌ [LOGIN] Is Timeout:", error.code === "ECONNABORTED");
+      console.error("❌ [LOGIN] Request config:", error.config);
+
+      const errorMessage =
+        error.response?.data?.message || error.message || "Login failed";
+      console.error("⚠️ [LOGIN] Showing error to user:", errorMessage);
+
+      toast.error(errorMessage);
     } finally {
+      console.log("🏁 [LOGIN] Login attempt finished");
       setIsLoading(false);
     }
   };
@@ -94,4 +140,3 @@ export default function Login() {
     </div>
   );
 }
-

@@ -1,0 +1,22 @@
+# Development Dockerfile
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Install global dependencies for NestJS CLI
+RUN npm install -g @nestjs/cli
+
+# Copy package files
+COPY package*.json ./
+
+# Install all dependencies (including dev dependencies)
+RUN npm ci
+
+# Copy source code
+COPY . .
+
+# Expose the application port
+EXPOSE 3002
+
+# Start the application in development mode with watch
+CMD ["npm", "run", "dev"]

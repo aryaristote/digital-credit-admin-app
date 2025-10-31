@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react";
 import { Bell, Check, Trash2 } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../components/ui/Card";
+import { Card, CardContent } from "../components/ui/Card";
 import Button from "../components/ui/Button";
 import { formatRelativeTime } from "../lib/utils";
 import { toast } from "sonner";

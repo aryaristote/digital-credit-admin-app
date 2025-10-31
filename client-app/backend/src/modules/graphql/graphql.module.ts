@@ -25,4 +25,4 @@ import { SavingsModule } from '../savings/savings.module';
   ],
   providers: [UsersResolver, CreditResolver, SavingsResolver],
 })
-export class GraphQLModule {}
+export class ClientGraphQLModule {}

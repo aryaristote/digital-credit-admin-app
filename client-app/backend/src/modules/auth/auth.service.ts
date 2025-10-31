@@ -30,7 +30,7 @@ export class AuthService {
     const userResponse = await this.usersService.create(createUserDto);
 
     // Get full user entity for token generation
-    const user = await this.usersService.findById(userResponse.id);
+    const user = await this.usersService.findOne(userResponse.id);
 
     // Generate tokens
     const tokens = await this.generateTokens(user);
@@ -121,7 +121,7 @@ export class AuthService {
       throw new UnauthorizedException('Refresh token expired');
     }
 
-    const user = await this.usersService.findById(session.userId);
+    const user = await this.usersService.findOne(session.userId);
 
     if (!user || !user.isActive) {
       throw new UnauthorizedException('User not found or inactive');
@@ -165,7 +165,7 @@ export class AuthService {
     await this.sessionsService.invalidateAllUserSessions(userId);
   }
 
-  private async generateTokens(user: User) {
+  private async generateTokens(user: User | { id: string; email: string; role: any }) {
     const payload = {
       sub: user.id,
       email: user.email,

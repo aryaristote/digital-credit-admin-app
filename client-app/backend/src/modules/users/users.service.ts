@@ -85,9 +85,43 @@ export class UsersService {
     return this.toResponseDto(user);
   }
 
+  async updateCreditScore(userId: string): Promise<number> {
+    // Get current user to potentially base score on current state
+    const user = await this.usersRepository.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // Calculate new credit score (simulated - in production this would use real credit scoring logic)
+    const newCreditScore = this.calculateUpdatedCreditScore(user.creditScore);
+
+    // Update credit score in database
+    await this.usersRepository.updateCreditScore(userId, newCreditScore);
+
+    // Invalidate user cache
+    await this.cacheService.del(this.cacheService.generateKey('user', userId));
+
+    return newCreditScore;
+  }
+
   private generateInitialCreditScore(): number {
     // Simulate credit score generation
     return Math.floor(Math.random() * 200) + 600; // 600-800
+  }
+
+  private calculateUpdatedCreditScore(currentScore: number): number {
+    // Simulate credit score recalculation
+    // Score can vary slightly based on user's financial activity
+    // For demo purposes, generate a score in reasonable range around current score
+    const variation = Math.floor(Math.random() * 50) - 25; // ±25 points variation
+    const newScore = Math.max(300, Math.min(850, currentScore + variation));
+
+    // If user has no score yet, generate initial score
+    if (currentScore === 0) {
+      return this.generateInitialCreditScore();
+    }
+
+    return Math.round(newScore);
   }
 
   private toResponseDto(user: User): UserResponseDto {

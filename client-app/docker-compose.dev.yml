@@ -1,0 +1,91 @@
+version: "3.8"
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: digital-credit-postgres-dev
+    environment:
+      POSTGRES_DB: digital_credit_client
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data
+      - ./backend/database/init:/docker-entrypoint-initdb.d
+    networks:
+      - digital-credit-network
+
+  # Redis (for caching and background jobs)
+  redis:
+    image: redis:7-alpine
+    container_name: digital-credit-redis-dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data_dev:/data
+    networks:
+      - digital-credit-network
+
+  # Backend API (Development with hot reload)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: digital-credit-backend-dev
+    environment:
+      NODE_ENV: development
+      PORT: 3005
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_DATABASE: digital_credit_client
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: dev-jwt-secret-key
+      JWT_EXPIRES_IN: 1h
+      JWT_REFRESH_SECRET: dev-refresh-secret-key
+      JWT_REFRESH_EXPIRES_IN: 7d
+      API_PREFIX: api/v1
+      FRONTEND_URL: http://localhost:3000
+    ports:
+      - "3005:3005"
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - digital-credit-network
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    command: npm run start:dev
+
+  # Frontend React App (Development with hot reload)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: digital-credit-frontend-dev
+    environment:
+      VITE_API_URL: http://localhost:3005/api/v1
+      VITE_GRAPHQL_URL: http://localhost:3005/graphql
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - digital-credit-network
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run dev
+
+volumes:
+  postgres_data_dev:
+  redis_data_dev:
+
+networks:
+  digital-credit-network:
+    driver: bridge

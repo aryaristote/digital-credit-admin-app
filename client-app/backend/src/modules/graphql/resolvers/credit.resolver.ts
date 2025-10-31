@@ -6,8 +6,8 @@ import {
   CreateCreditRequestInput,
   RepayCreditInput,
 } from '../schemas/credit.schema';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
+import { CurrentUser } from '@common/decorators/current-user.decorator';
 
 @Resolver(() => CreditRequest)
 export class CreditResolver {
@@ -16,7 +16,7 @@ export class CreditResolver {
   @Query(() => [CreditRequest], { name: 'myCredits' })
   @UseGuards(JwtAuthGuard)
   async getMyCredits(@CurrentUser('id') userId: string): Promise<any[]> {
-    const credits = await this.creditService.getUserCredits(userId);
+    const credits = await this.creditService.getCreditRequests(userId);
     return credits.map((credit) => ({
       id: credit.id,
       userId: credit.userId,
@@ -38,7 +38,7 @@ export class CreditResolver {
     @Args('id') id: string,
     @CurrentUser('id') userId: string,
   ): Promise<any> {
-    const credit = await this.creditService.getCreditDetails(id, userId);
+    const credit = await this.creditService.getCreditRequest(userId, id);
     return {
       id: credit.id,
       userId: credit.userId,
@@ -73,6 +73,6 @@ export class CreditResolver {
     await this.creditService.repayCredit(userId, creditRequestId, {
       amount: input.amount,
     });
-    return this.creditService.getCreditDetails(creditRequestId, userId);
+    return this.creditService.getCreditRequest(userId, creditRequestId);
   }
 }

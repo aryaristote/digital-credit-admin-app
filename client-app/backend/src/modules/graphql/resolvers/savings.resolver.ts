@@ -7,8 +7,8 @@ import {
   DepositInput,
   WithdrawInput,
 } from '../schemas/savings.schema';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
+import { CurrentUser } from '@common/decorators/current-user.decorator';
 
 @Resolver(() => SavingsAccount)
 export class SavingsResolver {

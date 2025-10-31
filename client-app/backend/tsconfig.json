@@ -23,6 +23,12 @@
       "@modules/*": ["src/modules/*"],
       "@common/*": ["src/common/*"]
     }
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src/modules/grpc/**/*",
+    "src/middleware/compression.middleware.ts",
+    "**/*.spec.ts"
+  ]
 }
-

@@ -1,100 +1,49 @@
-import { Injectable, Inject, Logger } from '@nestjs/common';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class CacheService {
-  private readonly logger = new Logger(CacheService.name);
+  private cache: Map<string, { value: any; expiresAt: number }> = new Map();
 
-  constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
+  async get<T>(key: string): Promise<T | null> {
+    const item = this.cache.get(key);
+    if (!item) return null;
 
-  /**
-   * Get value from cache
-   */
-  async get<T>(key: string): Promise<T | undefined> {
-    try {
-      return await this.cacheManager.get<T>(key);
-    } catch (error) {
-      this.logger.error(`Cache get error for key ${key}: ${error.message}`);
-      return undefined;
+    if (item.expiresAt && item.expiresAt < Date.now()) {
+      this.cache.delete(key);
+      return null;
     }
+
+    return item.value as T;
   }
 
-  /**
-   * Set value in cache
-   */
   async set(key: string, value: any, ttl?: number): Promise<void> {
-    try {
-      await this.cacheManager.set(key, value, ttl);
-    } catch (error) {
-      this.logger.error(`Cache set error for key ${key}: ${error.message}`);
-    }
+    const expiresAt = ttl ? Date.now() + ttl * 1000 : undefined;
+    this.cache.set(key, { value, expiresAt });
   }
 
-  /**
-   * Delete value from cache
-   */
   async del(key: string): Promise<void> {
-    try {
-      await this.cacheManager.del(key);
-    } catch (error) {
-      this.logger.error(`Cache delete error for key ${key}: ${error.message}`);
-    }
+    this.cache.delete(key);
   }
 
-  /**
-   * Reset entire cache
-   */
-  async reset(): Promise<void> {
-    try {
-      await this.cacheManager.reset();
-    } catch (error) {
-      this.logger.error(`Cache reset error: ${error.message}`);
-    }
-  }
-
-  /**
-   * Increment counter (for rate limiting)
-   */
-  async increment(key: string): Promise<number> {
-    try {
-      const current = await this.get<number>(key);
-      const newValue = (current || 0) + 1;
-      await this.set(key, newValue, 60); // Default 60s TTL
-      return newValue;
-    } catch (error) {
-      this.logger.error(`Cache increment error for key ${key}: ${error.message}`);
-      return 0;
-    }
-  }
-
-  /**
-   * Generate cache key
-   */
-  generateKey(prefix: string, ...parts: (string | number)[]): string {
+  generateKey(prefix: string, ...parts: string[]): string {
     return `${prefix}:${parts.join(':')}`;
   }
 
-  /**
-   * Get or set pattern
-   */
-  async getOrSet<T>(key: string, fetcher: () => Promise<T>, ttl?: number): Promise<T> {
+  async getOrSet<T>(key: string, factory: () => Promise<T>, ttl?: number): Promise<T> {
     const cached = await this.get<T>(key);
-    if (cached !== undefined) {
+    if (cached !== null) {
       return cached;
     }
 
-    const value = await fetcher();
+    const value = await factory();
     await this.set(key, value, ttl);
     return value;
   }
 
-  /**
-   * Invalidate cache by pattern
-   */
-  async invalidatePattern(pattern: string): Promise<void> {
-    // Note: This requires Redis store, not cache-manager
-    // Implementation depends on your Redis client
-    this.logger.warn(`Pattern invalidation not fully implemented for: ${pattern}`);
+  async increment(key: string): Promise<number> {
+    const current = (await this.get<number>(key)) || 0;
+    const newValue = current + 1;
+    await this.set(key, newValue);
+    return newValue;
   }
 }

@@ -11,6 +11,8 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
 import { SessionsModule } from './modules/sessions/sessions.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { CacheModule } from './modules/cache/cache.module';
+import { HealthModule } from './modules/health/health.module';
+import { ClientGraphQLModule } from './modules/graphql/graphql.module';
 import { typeOrmConfig } from './config/typeorm.config';
 import { PerformanceInterceptor } from './common/interceptors/performance.interceptor';
 import { RateLimitGuard } from './common/guards/rate-limit.guard';
@@ -46,6 +48,8 @@ import { RateLimitGuard } from './common/guards/rate-limit.guard';
     CacheModule,
 
     // Feature modules
+    HealthModule,
+    ClientGraphQLModule,
     AuthModule,
     UsersModule,
     SavingsModule,

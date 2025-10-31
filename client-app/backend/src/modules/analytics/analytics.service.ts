@@ -19,7 +19,7 @@ export class AnalyticsService {
    * Score based on: credit score, savings ratio, debt-to-income, payment history
    */
   async getFinancialHealth(userId: string) {
-    const user = await this.usersService.findById(userId);
+    const user = await this.usersService.findOne(userId);
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -186,7 +186,7 @@ export class AnalyticsService {
     return 20;
   }
 
-  private async calculatePaymentHistoryComponent(userId: string): number {
+  private async calculatePaymentHistoryComponent(userId: string): Promise<number> {
     // Get all completed credits
     const completedCredits = await this.creditRepository.findByUserId(userId);
     const completed = completedCredits.filter((c) => c.status === CreditStatus.COMPLETED);

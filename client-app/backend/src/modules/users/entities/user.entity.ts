@@ -8,7 +8,7 @@ import {
   OneToOne,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
-import { UserRole } from '@common/enums/user-role.enum';
+import { UserRole } from '../../../common/enums/user-role.enum';
 import { Session } from '../../sessions/entities/session.entity';
 import { SavingsAccount } from '../../savings/entities/savings-account.entity';
 import { CreditRequest } from '../../credit/entities/credit-request.entity';
@@ -85,4 +85,3 @@ export class User {
   @OneToMany(() => CreditRequest, (creditRequest) => creditRequest.user)
   creditRequests: CreditRequest[];
 }
-

@@ -1,0 +1,126 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input CreateCreditRequestInput {
+  purpose: String
+  requestedAmount: Float!
+  termMonths: Int!
+}
+
+input CreateUserInput {
+  email: String!
+  firstName: String!
+  lastName: String!
+  password: String!
+  phoneNumber: String
+}
+
+type CreditRequest {
+  approvedAmount: Float
+  createdAt: DateTime!
+  id: ID!
+  interestRate: Float!
+  purpose: String
+  rejectionReason: String
+  requestedAmount: Float!
+  status: CreditStatus!
+  termMonths: Int!
+  totalRepaid: Float!
+  updatedAt: DateTime
+  userId: ID!
+}
+
+enum CreditStatus {
+  ACTIVE
+  APPROVED
+  COMPLETED
+  DEFAULTED
+  PENDING
+  REJECTED
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input DepositInput {
+  amount: Float!
+  description: String
+}
+
+type Mutation {
+  createCreditRequest(input: CreateCreditRequestInput!): CreditRequest!
+  createUser(input: CreateUserInput!): User!
+  deposit(input: DepositInput!): Transaction!
+  repayCredit(creditRequestId: String!, input: RepayCreditInput!): CreditRequest!
+  updateUser(input: UpdateUserInput!): User!
+  withdraw(input: WithdrawInput!): Transaction!
+}
+
+type Query {
+  credit(id: String!): CreditRequest!
+  me: User!
+  myCredits: [CreditRequest!]!
+  savingsAccount: SavingsAccount!
+  transactions(limit: Float = 10): [Transaction!]!
+  user(id: String!): User!
+}
+
+input RepayCreditInput {
+  amount: Float!
+}
+
+type SavingsAccount {
+  accountNumber: String!
+  balance: Float!
+  createdAt: DateTime!
+  id: ID!
+  interestRate: Float!
+  status: String!
+  updatedAt: DateTime
+  userId: ID!
+}
+
+type Transaction {
+  amount: Float!
+  balanceAfter: Float!
+  createdAt: DateTime!
+  description: String
+  id: ID!
+  reference: String
+  savingsAccountId: ID!
+  status: String!
+  type: TransactionType!
+}
+
+enum TransactionType {
+  DEPOSIT
+  FEE
+  INTEREST
+  WITHDRAWAL
+}
+
+input UpdateUserInput {
+  firstName: String
+  lastName: String
+  phoneNumber: String
+}
+
+type User {
+  createdAt: DateTime!
+  creditScore: Float!
+  email: String!
+  firstName: String!
+  id: ID!
+  isActive: Boolean!
+  lastName: String!
+  phoneNumber: String
+  updatedAt: DateTime
+}
+
+input WithdrawInput {
+  amount: Float!
+  description: String
+}
